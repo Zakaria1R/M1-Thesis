@@ -5,7 +5,11 @@
   const TOTAL_MINUTES = 40;
   const TOTAL_MS = TOTAL_MINUTES * 60 * 1000;
   const WORLD_MIN = 0;
-  const WORLD_MAX = 6;
+  // Worlds:
+  // 0 Title
+  // 1 Level Select (non-interactive overview)
+  // 2..7 correspond to Worlds 1..6
+  const WORLD_MAX = 7;
 
   const app = document.getElementById("app");
   const wipe = document.getElementById("wipe");
@@ -41,12 +45,13 @@
       hud: "WORLD 0 — TITLE",
       bloc: "BLOC —",
     },
-    1: { hud: "WORLD 1 — STRATÉGIE", bloc: "BLOC 1 — C1.1 → C1.5" },
-    2: { hud: "WORLD 2 — CONCEPTION", bloc: "BLOC 2 — C2.1 → C2.6" },
-    3: { hud: "WORLD 3 — PILOTAGE", bloc: "BLOC 3 — C3.1 → C3.4" },
-    4: { hud: "WORLD 4 — GAME DESIGN & LIVE DEMO", bloc: "BLOC 4 — LIVE DEMO" },
-    5: { hud: "WORLD 5 — RESPONSABILITÉ & RSE", bloc: "TRANSVERSAL — RSE" },
-    6: { hud: "WORLD 6 — BILAN / GAME OVER", bloc: "FIN — MERCI" },
+    1: { hud: "LEVEL SELECT", bloc: "CARTE — WORLDS 1 → 6" },
+    2: { hud: "WORLD 1 — STRATÉGIE", bloc: "BLOC 1 — C1.1 → C1.5" },
+    3: { hud: "WORLD 2 — CONCEPTION", bloc: "BLOC 2 — C2.1 → C2.6" },
+    4: { hud: "WORLD 3 — PILOTAGE", bloc: "BLOC 3 — C3.1 → C3.4" },
+    5: { hud: "WORLD 4 — GAME DESIGN & LIVE DEMO", bloc: "BLOC 4 — LIVE DEMO" },
+    6: { hud: "WORLD 5 — RESPONSABILITÉ & RSE", bloc: "TRANSVERSAL — RSE" },
+    7: { hud: "WORLD 6 — BILAN / GAME OVER", bloc: "FIN — MERCI" },
   };
 
   function pad2(n) {
@@ -119,7 +124,37 @@
     void runBootSequence(canvas);
   }
 
-  function drawPixelLogoAssembly(canvas) {
+  function makeLogoBitmap(width, height) {
+    const off = document.createElement("canvas");
+    off.width = width;
+    off.height = height;
+    const ctx = off.getContext("2d");
+    if (!ctx) return null;
+
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#fff1df";
+    ctx.font = `900 ${Math.floor(height * 0.54)}px "Press Start 2P", monospace`;
+    ctx.fillText("HELL-o", Math.floor(width * 0.5), Math.floor(height * 0.52));
+
+    // underline glow hint
+    ctx.fillStyle = "rgba(255,58,58,0.75)";
+    ctx.fillRect(Math.floor(width * 0.18), Math.floor(height * 0.84), Math.floor(width * 0.64), 2);
+
+    return ctx.getImageData(0, 0, width, height);
+  }
+
+  function randInt(n) {
+    return Math.floor(Math.random() * n);
+  }
+
+  function playScrambleBoot(canvas, durationMs = 2600) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return Promise.resolve();
 
@@ -127,119 +162,99 @@
     const h = canvas.height;
     ctx.imageSmoothingEnabled = false;
 
-    // "M1 THESIS" logo: precompute a simple pixel mask grid.
-    const GRID = 40;
-    const cell = Math.floor(w / GRID);
-    const cols = Math.floor(w / cell);
-    const rows = Math.floor(h / cell);
+    // Low-res buffer for crunchy pixels.
+    const bw = 128;
+    const bh = 56;
+    const logo = makeLogoBitmap(bw, bh);
+    if (!logo) return Promise.resolve();
 
-    // Background clear
-    ctx.clearRect(0, 0, w, h);
-
-    const textLines = ["M1", "THESIS"];
-    const pixels = [];
-
-    // Create a low-res offscreen to rasterize text into pixels.
-    const off = document.createElement("canvas");
-    off.width = cols;
-    off.height = rows;
-    const octx = off.getContext("2d");
-    if (!octx) return;
-
-    octx.clearRect(0, 0, cols, rows);
-    octx.fillStyle = "#000";
-    octx.fillRect(0, 0, cols, rows);
-
-    octx.fillStyle = "#fff";
-    octx.textAlign = "center";
-    octx.textBaseline = "middle";
-    octx.font = `bold ${Math.floor(rows * 0.38)}px "Press Start 2P", monospace`;
-
-    octx.globalAlpha = 1;
-    octx.fillText(textLines[0], Math.floor(cols * 0.5), Math.floor(rows * 0.38));
-    octx.font = `bold ${Math.floor(rows * 0.22)}px "Press Start 2P", monospace`;
-    octx.fillText(textLines[1], Math.floor(cols * 0.5), Math.floor(rows * 0.68));
-
-    const img = octx.getImageData(0, 0, cols, rows).data;
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        const idx = (y * cols + x) * 4;
-        const r = img[idx];
-        if (r > 160) pixels.push({ x, y });
-      }
+    // Start with full random noise.
+    const cur = new Uint8ClampedArray(logo.data.length);
+    for (let i = 0; i < cur.length; i += 4) {
+      const v = randInt(256);
+      cur[i] = v;
+      cur[i + 1] = v;
+      cur[i + 2] = v;
+      cur[i + 3] = 255;
     }
 
-    // Shuffle so it assembles "pixel-by-pixel".
-    for (let i = pixels.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pixels[i], pixels[j]] = [pixels[j], pixels[i]];
+    // A permutation map: each destination pixel pulls from a random source at first.
+    const perm = new Uint32Array(bw * bh);
+    for (let i = 0; i < perm.length; i++) perm[i] = i;
+    for (let i = perm.length - 1; i > 0; i--) {
+      const j = randInt(i + 1);
+      const t = perm[i];
+      perm[i] = perm[j];
+      perm[j] = t;
     }
 
-    let drawn = 0;
-    const perFrame = Math.max(12, Math.floor(pixels.length / 70));
+    const buf = new ImageData(cur, bw, bh);
+
+    const tmp = document.createElement("canvas");
+    tmp.width = bw;
+    tmp.height = bh;
+    const tctx = tmp.getContext("2d");
+    if (!tctx) return Promise.resolve();
+    tctx.imageSmoothingEnabled = false;
+
     const start = now();
 
-    function frame() {
-      // CRT-ish fade-in background and glow.
-      ctx.fillStyle = "rgba(0,0,0,0.28)";
-      ctx.fillRect(0, 0, w, h);
-
-      const t = Math.min(1, (now() - start) / 800);
-      const glow = 0.35 + 0.25 * t;
-
-      for (let k = 0; k < perFrame && drawn < pixels.length; k++, drawn++) {
-        const p = pixels[drawn];
-        const px = p.x * cell;
-        const py = p.y * cell;
-
-        ctx.fillStyle = `rgba(121,255,179,${glow})`;
-        ctx.fillRect(px - 1, py - 1, cell + 2, cell + 2);
-        ctx.fillStyle = "rgba(232,243,255,0.92)";
-        ctx.fillRect(px, py, cell, cell);
-      }
-
-      if (drawn < pixels.length) requestAnimationFrame(frame);
-      else finalize();
-    }
-
-    function finalize() {
-      // subtle underline bar
-      ctx.fillStyle = "rgba(121,255,179,0.55)";
-      ctx.fillRect(Math.floor(w * 0.18), Math.floor(h * 0.84), Math.floor(w * 0.64), 3);
-    }
-
     return new Promise((resolve) => {
-      function finalize() {
-        // subtle underline bar
-        ctx.fillStyle = "rgba(92,240,255,0.55)";
-        ctx.fillRect(Math.floor(w * 0.18), Math.floor(h * 0.84), Math.floor(w * 0.64), 3);
-        resolve();
+      function frame() {
+        const t = Math.min(1, (now() - start) / durationMs);
+        const ease = t * t * (3 - 2 * t); // smoothstep
+
+        // How many pixels are "locked in" (correct mapping + correct color).
+        const locked = Math.floor(perm.length * ease);
+
+        // Update some random pixels each frame.
+        const updates = Math.max(700, Math.floor(perm.length / 8));
+        const warm = 0.22 * (1 - ease);
+
+        for (let k = 0; k < updates; k++) {
+          const di = randInt(perm.length);
+          const base = di * 4;
+
+          if (di < locked) {
+            const si = perm[di] * 4;
+            cur[base] = logo.data[si];
+            cur[base + 1] = logo.data[si + 1];
+            cur[base + 2] = logo.data[si + 2];
+            cur[base + 3] = 255;
+          } else {
+            // noise that gradually becomes warm ember noise
+            if (Math.random() < warm) {
+              const r = 70 + randInt(186);
+              const g = Math.floor(r * 0.28);
+              const b = Math.floor(r * 0.12);
+              cur[base] = r;
+              cur[base + 1] = g;
+              cur[base + 2] = b;
+              cur[base + 3] = 255;
+            } else {
+              const v = randInt(256);
+              cur[base] = v;
+              cur[base + 1] = v;
+              cur[base + 2] = v;
+              cur[base + 3] = 255;
+            }
+          }
+        }
+
+        buf.data.set(cur);
+        tctx.putImageData(buf, 0, 0);
+
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "rgba(0,0,0,0.35)";
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha = 1;
+        ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
+
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
       }
 
       requestAnimationFrame(frame);
-      // overwrite finalize closure used by frame()
-      function frame() {
-        // CRT-ish fade-in background and glow.
-        ctx.fillStyle = "rgba(0,0,0,0.28)";
-        ctx.fillRect(0, 0, w, h);
-
-        const t = Math.min(1, (now() - start) / 800);
-        const glow = 0.35 + 0.25 * t;
-
-        for (let k = 0; k < perFrame && drawn < pixels.length; k++, drawn++) {
-          const p = pixels[drawn];
-          const px = p.x * cell;
-          const py = p.y * cell;
-
-          ctx.fillStyle = `rgba(92,240,255,${glow})`;
-          ctx.fillRect(px - 1, py - 1, cell + 2, cell + 2);
-          ctx.fillStyle = "rgba(238,244,255,0.92)";
-          ctx.fillRect(px, py, cell, cell);
-        }
-
-        if (drawn < pixels.length) requestAnimationFrame(frame);
-        else finalize();
-      }
     });
   }
 
@@ -265,10 +280,16 @@
     await new Promise((r) => setTimeout(r, 260));
     document.body.classList.remove("is-flickering");
 
-    status.textContent = "Assembling logo...";
-    await drawPixelLogoAssembly(canvas);
+    // Auto-play scramble → unscramble → logo (no user input).
+    status.textContent = "Warming up...";
+    await new Promise((r) => setTimeout(r, 120));
+    status.textContent = "Tuning signal...";
+    await playScrambleBoot(canvas, 2600);
 
-    status.textContent = "PRESS START";
+    status.replaceChildren(
+      document.createTextNode("PRESS START "),
+      h("span", { class: "blink", text: "▮" })
+    );
     state.pressStartArmed = true;
   }
 
@@ -276,7 +297,7 @@
     const title = worldMeta[world]?.hud ?? `WORLD ${world}`;
     setHudForWorld(world);
 
-    const commonHints = h("div", { class: "hint" }, [
+    const titleHints = h("div", { class: "hint" }, [
       document.createTextNode("Navigation: "),
       h("kbd", { text: "←" }),
       document.createTextNode(" "),
@@ -291,7 +312,6 @@
         h("div", { class: "screen screen--title" }, [
           h("div", { class: "panel panel--title" }, [
             h("div", { class: "titleArt" }, [
-              h("div", { class: "titleArt__kicker", text: "MÉMOIRE / GAME TITLE" }),
               h("h1", { class: "gameTitle", text: deckInfo.thesisTitle }),
               h("div", { class: "titleArt__sub", text: "Press Enter" }),
             ]),
@@ -303,111 +323,214 @@
               }),
               h("div", { class: "titleMeta__line", text: deckInfo.school }),
             ]),
-            commonHints,
+            titleHints,
           ]),
         ])
       );
       return;
     }
 
-    if (world === 4) {
+    if (world === 1) {
+      const levels = [
+        ["WORLD 1", "Stratégie"],
+        ["WORLD 2", "Conception"],
+        ["WORLD 3", "Pilotage"],
+        ["WORLD 4", "Game Design & Live Demo"],
+        ["WORLD 5", "Responsabilité & RSE"],
+        ["WORLD 6", "Bilan / Game Over"],
+      ];
+      const cards = levels.map(([n, t]) =>
+        h("div", { class: "levelCard" }, [
+          h("div", { class: "levelCard__n", text: n }),
+          h("div", { class: "levelCard__t", text: t }),
+          h("div", { class: "levelCard__bar" }, [h("div", {}, [])]),
+        ])
+      );
+
       app.replaceChildren(
         h("div", { class: "screen" }, [
-          h("h2", { class: "title", text: title }),
-          h("p", {
-            class: "subtitle",
-            text: "Placeholder screen for a live Unreal Engine demo.",
-          }),
-          h("ul", { class: "list" }, [
-            h("li", {}, [
-              h("span", { text: "Open the Unreal game window" }),
-              h("span", { class: "code", text: "Alt+Tab" }),
-            ]),
-            h("li", {}, [
-              h("span", { text: "Run the prepared demo sequence" }),
-              h("span", { class: "code", text: "LIVE" }),
-            ]),
-            h("li", {}, [
-              h("span", { text: "Return here to continue the deck" }),
-              h("span", { class: "code", text: "Alt+Tab" }),
-            ]),
+          h("div", { class: "panel" }, [
+            h("h2", { class: "title", text: "LEVEL SELECT" }),
+            h("div", { class: "mapGrid" }, cards),
           ]),
-          commonHints,
         ])
       );
       return;
     }
 
-    if (world === 6) {
+    const logical = world - 1; // 1..6
+
+    if (logical === 4) {
       app.replaceChildren(
         h("div", { class: "screen" }, [
-          h("h2", { class: "title", text: "GAME OVER / MERCI" }),
-          h("p", { class: "subtitle", text: "Bilan, questions, et suite." }),
-          h("ul", { class: "list" }, [
-            h("li", {}, [
-              h("span", { text: "Key takeaways" }),
-              h("span", { class: "code", text: "✓" }),
+          h("div", { class: "panel" }, [
+            h("h2", { class: "title", text: title }),
+            h("div", { class: "bigShot" }, [
+              h("div", { text: "LARGE SCREENSHOT / VIDEO PLACEHOLDER\n(HELL-o gameplay / UE capture)" }),
             ]),
-            h("li", {}, [
-              h("span", { text: "Open Q&A" }),
-              h("span", { class: "code", text: "?" }),
-            ]),
-            h("li", {}, [
-              h("span", { text: "Contact / links" }),
-              h("span", { class: "code", text: "@" }),
-            ]),
+            h("p", { class: "subtitle", text: "Live demo: Alt+Tab to Unreal, run demo, Alt+Tab back." }),
           ]),
-          commonHints,
         ])
       );
       return;
     }
 
-    const worldLists = {
-      1: [
-        "Contexte, objectifs, public & contraintes",
-        "Veille, références, benchmarks",
-        "Stratégie produit (vision, scope, risques)",
-        "Pitch, planning macro, jalons",
-        "Itérations & décisions (preuves)",
-      ],
-      2: [
-        "Concept, intentions & promesse d'expérience",
-        "Mécaniques, boucles, règles & balance",
-        "UX flows, wireframes, prototypage",
-        "Content/Level design & progression",
-        "Documentation (GDD, specs, pipeline)",
-        "Playtests, retours & ajustements",
-      ],
-      3: [
-        "Pilotage: organisation, sprint/jalons",
-        "Communication, feedback loops, reporting",
-        "Qualité: risques, bugs, critères d'acceptation",
-        "Livraison: build, démo, rétrospective",
-      ],
-      5: [
-        "Responsabilité: impact & limites",
-        "Accessibilité & inclusion (UX/UI)",
-        "Éthique, données & sobriété numérique",
-      ],
-    };
+    if (logical === 6) {
+      app.replaceChildren(
+        h("div", { class: "screen" }, [
+          h("div", { class: "panel" }, [
+            h("div", { class: "gameOver" }, [
+              h("h2", { class: "gameOver__title", text: "GAME OVER" }),
+              h("div", { class: "scoreGrid" }, [
+                h("div", { class: "score" }, [
+                  h("div", { class: "score__k", text: "RUN TIME" }),
+                  h("div", { class: "score__v", text: "40:00" }),
+                ]),
+                h("div", { class: "score" }, [
+                  h("div", { class: "score__k", text: "WORLDS CLEARED" }),
+                  h("div", { class: "score__v", text: "6/6" }),
+                ]),
+                h("div", { class: "score" }, [
+                  h("div", { class: "score__k", text: "KEY TAKEAWAYS" }),
+                  h("div", { class: "score__v", text: "—" }),
+                ]),
+                h("div", { class: "score" }, [
+                  h("div", { class: "score__k", text: "Q&A" }),
+                  h("div", { class: "score__v", text: "READY" }),
+                ]),
+              ]),
+              h("p", { class: "subtitle", text: "Merci — questions ?" }),
+            ]),
+          ]),
+        ])
+      );
+      return;
+    }
 
-    const listItems = (worldLists[world] || []).map((label) =>
-      h("li", {}, [h("span", { class: "bullet" }, []), h("span", { text: label })])
-    );
+    const bulletList = (items) =>
+      h("ul", { class: "list" }, items.map((label) => h("li", {}, [h("span", { class: "bullet" }, []), h("span", { text: label })])));
+
+    if (logical === 1) {
+      app.replaceChildren(
+        h("div", { class: "screen" }, [
+          h("div", { class: "panel" }, [
+            h("h2", { class: "title", text: title }),
+            h("div", { class: "grid2" }, [
+              h("div", {}, [
+                bulletList([
+                  "Contexte, objectifs, public & contraintes",
+                  "Veille, références, benchmarks",
+                  "Stratégie produit (vision, scope, risques)",
+                  "Pitch, planning macro, jalons",
+                  "Itérations & décisions (preuves)",
+                ]),
+              ]),
+              h("div", { class: "frame" }, [
+                h("div", { class: "frame__label", text: "MOODBOARD / REFERENCES" }),
+                h("div", { class: "frame__art", text: "Placeholder image grid\n(art direction, refs, palette)" }),
+              ]),
+            ]),
+          ]),
+        ])
+      );
+      return;
+    }
+
+    if (logical === 2) {
+      app.replaceChildren(
+        h("div", { class: "screen" }, [
+          h("div", { class: "panel" }, [
+            h("h2", { class: "title", text: title }),
+            h("div", { class: "grid2" }, [
+              h("div", {}, [
+                bulletList([
+                  "Concept, intentions & promesse d'expérience",
+                  "Mécaniques, boucles, règles & balance",
+                  "UX flows, wireframes, prototypage",
+                  "Content/Level design & progression",
+                  "Documentation (GDD, specs, pipeline)",
+                  "Playtests, retours & ajustements",
+                ]),
+              ]),
+              h("div", { class: "frame" }, [
+                h("div", { class: "frame__label", text: "CONCEPT ART / SPRITE" }),
+                h("div", { class: "frame__art", text: "Placeholder sprite / concept sheet\n(pixelated)" }),
+              ]),
+            ]),
+          ]),
+        ])
+      );
+      return;
+    }
+
+    if (logical === 3) {
+      app.replaceChildren(
+        h("div", { class: "screen" }, [
+          h("div", { class: "panel" }, [
+            h("h2", { class: "title", text: title }),
+            h("div", { class: "timeline" }, [
+              h("div", { class: "step" }, [
+                h("div", { class: "step__dot" }, []),
+                h("div", {}, [
+                  h("div", { class: "step__title", text: "Phase 1 — Cadrage" }),
+                  h("div", { class: "step__sub", text: "Scope, jalons, risques, critères d'acceptation." }),
+                ]),
+              ]),
+              h("div", { class: "step" }, [
+                h("div", { class: "step__dot" }, []),
+                h("div", {}, [
+                  h("div", { class: "step__title", text: "Phase 2 — Production" }),
+                  h("div", { class: "step__sub", text: "Sprints, communication, playtests, bug triage." }),
+                ]),
+              ]),
+              h("div", { class: "step" }, [
+                h("div", { class: "step__dot" }, []),
+                h("div", {}, [
+                  h("div", { class: "step__title", text: "Phase 3 — Stabilisation" }),
+                  h("div", { class: "step__sub", text: "Qualité, performance, polish, build & démo." }),
+                ]),
+              ]),
+              h("div", { class: "step" }, [
+                h("div", { class: "step__dot" }, []),
+                h("div", {}, [
+                  h("div", { class: "step__title", text: "Phase 4 — Livraison" }),
+                  h("div", { class: "step__sub", text: "Présentation, documentation finale, rétrospective." }),
+                ]),
+              ]),
+            ]),
+          ]),
+        ])
+      );
+      return;
+    }
+
+    if (logical === 5) {
+      app.replaceChildren(
+        h("div", { class: "screen" }, [
+          h("div", { class: "panel" }, [
+            h("h2", { class: "title", text: title }),
+            h("div", { class: "iconList" }, [
+              h("div", { class: "iconRow" }, [
+                h("div", { class: "iconRow__icon", text: "♿" }),
+                h("div", { text: "Accessibilité & inclusion (UX/UI)" }),
+              ]),
+              h("div", { class: "iconRow" }, [
+                h("div", { class: "iconRow__icon", text: "⚖" }),
+                h("div", { text: "Éthique, données & responsabilité" }),
+              ]),
+              h("div", { class: "iconRow" }, [
+                h("div", { class: "iconRow__icon", text: "🌑" }),
+                h("div", { text: "Sobriété numérique (perf, taille, usage)" }),
+              ]),
+            ]),
+          ]),
+        ])
+      );
+      return;
+    }
 
     app.replaceChildren(
-      h("div", { class: "screen" }, [
-        h("div", { class: "panel" }, [
-          h("h2", { class: "title", text: title }),
-          h("p", {
-            class: "subtitle",
-            text: "Placeholder bullets (à remplacer) — style HELL-o.",
-          }),
-          h("ul", { class: "list" }, listItems),
-          commonHints,
-        ]),
-      ])
+      h("div", { class: "screen" }, [h("div", { class: "panel" }, [h("h2", { class: "title", text: title })])])
     );
   }
 
