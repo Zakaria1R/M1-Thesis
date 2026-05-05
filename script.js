@@ -9,19 +9,31 @@
 
   const app = document.getElementById("app");
   const wipe = document.getElementById("wipe");
+  const power = document.getElementById("power");
+  const hud = document.getElementById("hud");
   const hudBloc = document.getElementById("hudBloc");
   const hudTime = document.getElementById("hudTime");
   const hudBarFill = document.getElementById("hudBarFill");
+  const hudKeys = document.getElementById("hudKeys");
 
-  if (!app || !wipe || !hudBloc || !hudTime || !hudBarFill) {
+  if (!app || !wipe || !power || !hud || !hudBloc || !hudTime || !hudBarFill || !hudKeys) {
     throw new Error("Missing required DOM nodes.");
   }
 
   const state = {
     world: 0,
     booted: false,
+    pressStartArmed: false,
     deckStartedAt: null,
     transitionLock: false,
+  };
+
+  const deckInfo = {
+    name: "Zakaria Rahmouni",
+    thesisTitle: "Titre du mémoire (à compléter)",
+    rncp: "RNCP39855",
+    track: "Parcours Game Design",
+    school: "ITECOM Art Design",
   };
 
   const worldMeta = {
@@ -95,21 +107,21 @@
           h("canvas", { id: "logoCanvas", width: "320", height: "140" }, []),
         ]),
         h("div", { class: "boot__status" }, [
-          document.createTextNode("BOOTING PIXEL DECK"),
+          document.createTextNode("CRT POWER-ON SEQUENCE"),
           h("span", { class: "blink", text: " ▮" }),
-          h("div", { class: "boot__status", text: "Press Enter to start" }),
+          h("div", { class: "boot__status", id: "bootStatus", text: "..." }),
         ]),
       ])
     );
 
     const canvas = document.getElementById("logoCanvas");
     if (!(canvas instanceof HTMLCanvasElement)) return;
-    drawPixelLogoAssembly(canvas);
+    void runBootSequence(canvas);
   }
 
   function drawPixelLogoAssembly(canvas) {
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) return Promise.resolve();
 
     const w = canvas.width;
     const h = canvas.height;
@@ -196,7 +208,68 @@
       ctx.fillRect(Math.floor(w * 0.18), Math.floor(h * 0.84), Math.floor(w * 0.64), 3);
     }
 
-    requestAnimationFrame(frame);
+    return new Promise((resolve) => {
+      function finalize() {
+        // subtle underline bar
+        ctx.fillStyle = "rgba(92,240,255,0.55)";
+        ctx.fillRect(Math.floor(w * 0.18), Math.floor(h * 0.84), Math.floor(w * 0.64), 3);
+        resolve();
+      }
+
+      requestAnimationFrame(frame);
+      // overwrite finalize closure used by frame()
+      function frame() {
+        // CRT-ish fade-in background and glow.
+        ctx.fillStyle = "rgba(0,0,0,0.28)";
+        ctx.fillRect(0, 0, w, h);
+
+        const t = Math.min(1, (now() - start) / 800);
+        const glow = 0.35 + 0.25 * t;
+
+        for (let k = 0; k < perFrame && drawn < pixels.length; k++, drawn++) {
+          const p = pixels[drawn];
+          const px = p.x * cell;
+          const py = p.y * cell;
+
+          ctx.fillStyle = `rgba(92,240,255,${glow})`;
+          ctx.fillRect(px - 1, py - 1, cell + 2, cell + 2);
+          ctx.fillStyle = "rgba(238,244,255,0.92)";
+          ctx.fillRect(px, py, cell, cell);
+        }
+
+        if (drawn < pixels.length) requestAnimationFrame(frame);
+        else finalize();
+      }
+    });
+  }
+
+  async function runBootSequence(canvas) {
+    const status = document.getElementById("bootStatus");
+    if (!(status instanceof HTMLElement)) return;
+
+    // HUD hidden during boot; timer not running.
+    hud.classList.add("is-hidden");
+    hudKeys.textContent = "Press Enter";
+    state.pressStartArmed = false;
+
+    power.classList.add("is-off");
+    status.textContent = "Powering on...";
+
+    // Simulate CRT: off → flash → on
+    await new Promise((r) => setTimeout(r, 140));
+    power.classList.add("is-on");
+    await new Promise((r) => setTimeout(r, 260));
+
+    status.textContent = "Syncing scanlines...";
+    document.body.classList.add("is-flickering");
+    await new Promise((r) => setTimeout(r, 260));
+    document.body.classList.remove("is-flickering");
+
+    status.textContent = "Assembling logo...";
+    await drawPixelLogoAssembly(canvas);
+
+    status.textContent = "PRESS START";
+    state.pressStartArmed = true;
   }
 
   function renderWorld(world) {
@@ -216,19 +289,23 @@
     if (world === 0) {
       app.replaceChildren(
         h("div", { class: "screen" }, [
-          h("h1", { class: "title", text: "M1 THESIS DEFENSE" }),
+          h("h1", { class: "title", text: deckInfo.thesisTitle }),
           h("p", {
             class: "subtitle",
-            text: "RNCP39855 — Parcours Game Design",
+            text: `${deckInfo.rncp} — ${deckInfo.track} — ${deckInfo.school}`,
           }),
           h("div", { class: "row" }, [
             h("div", { class: "pill" }, [
-              h("b", { text: "NAME" }),
-              document.createTextNode(" — (à renseigner)"),
+              h("b", { text: "NOM" }),
+              document.createTextNode(` — ${deckInfo.name}`),
             ]),
             h("div", { class: "pill" }, [
-              h("b", { text: "THESIS" }),
-              document.createTextNode(" — (titre à renseigner)"),
+              h("b", { text: "PARCOURS" }),
+              document.createTextNode(` — ${deckInfo.track}`),
+            ]),
+            h("div", { class: "pill" }, [
+              h("b", { text: "ÉCOLE" }),
+              document.createTextNode(` — ${deckInfo.school}`),
             ]),
           ]),
           h("p", {
@@ -296,30 +373,30 @@
 
     const worldLists = {
       1: [
-        ["C1.1", "Analyse du contexte & objectifs"],
-        ["C1.2", "Veille / benchmarks & contraintes"],
-        ["C1.3", "Positionnement & stratégie projet"],
-        ["C1.4", "Pitch, scope & roadmap"],
-        ["C1.5", "Validation & itération"],
+        ["C1.1", "Contexte, objectifs, public & contraintes"],
+        ["C1.2", "Veille, références, benchmarks"],
+        ["C1.3", "Stratégie produit (vision, scope, risques)"],
+        ["C1.4", "Pitch, planning macro, jalons"],
+        ["C1.5", "Itérations & décisions (preuves)"],
       ],
       2: [
-        ["C2.1", "Concept & intentions"],
-        ["C2.2", "Systèmes, boucles & règles"],
-        ["C2.3", "UX flows & prototypage"],
-        ["C2.4", "Level / content design"],
-        ["C2.5", "Docs: GDD, specs, assets"],
-        ["C2.6", "Tests & ajustements"],
+        ["C2.1", "Concept, intentions & promesse d'expérience"],
+        ["C2.2", "Mécaniques, boucles, règles & balance"],
+        ["C2.3", "UX flows, wireframes, prototypage"],
+        ["C2.4", "Content/Level design & progression"],
+        ["C2.5", "Documentation (GDD, specs, pipeline)"],
+        ["C2.6", "Playtests, retours & ajustements"],
       ],
       3: [
-        ["C3.1", "Planification & jalons"],
-        ["C3.2", "Coordination & communication"],
-        ["C3.3", "Suivi qualité / risques"],
-        ["C3.4", "Livraison & rétrospective"],
+        ["C3.1", "Pilotage: organisation, sprint/jalons"],
+        ["C3.2", "Communication, feedback loops, reporting"],
+        ["C3.3", "Qualité: risques, bugs, critères d'acceptation"],
+        ["C3.4", "Livraison: build, démo, rétrospective"],
       ],
       5: [
-        ["RSE", "Impact & responsabilité"],
-        ["RSE", "Accessibilité & inclusion"],
-        ["RSE", "Éthique, données & sobriété"],
+        ["RSE", "Responsabilité: impact & limites"],
+        ["RSE", "Accessibilité & inclusion (UX/UI)"],
+        ["RSE", "Éthique, données & sobriété numérique"],
       ],
     };
 
@@ -345,6 +422,8 @@
     // Reflow
     void wipe.offsetHeight;
     wipe.classList.add("is-wiping");
+    document.body.classList.add("is-flickering");
+    window.setTimeout(() => document.body.classList.remove("is-flickering"), 520);
   }
 
   async function goToWorld(nextWorld) {
@@ -373,8 +452,11 @@
     if (["ArrowLeft", "ArrowRight", "Enter", " "].includes(key)) e.preventDefault();
 
     if (!state.booted) {
-      if (key === "Enter") {
+      if (key === "Enter" && state.pressStartArmed) {
         state.booted = true;
+        startDeckTimerIfNeeded();
+        hud.classList.remove("is-hidden");
+        hudKeys.textContent = "← → / Enter";
         wipeTransition();
         setTimeout(() => {
           renderWorld(0);
@@ -385,7 +467,6 @@
     }
 
     if (key === "ArrowRight" || key === "Enter") {
-      if (state.world === 0) startDeckTimerIfNeeded();
       void goToWorld(state.world + 1);
       return;
     }

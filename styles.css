@@ -1,13 +1,17 @@
 :root {
-  --bg: #06070a;
-  --fg: #e8f3ff;
-  --dim: rgba(232, 243, 255, 0.7);
-  --accent: #79ffb3;
+  --bg: #050815;
+  --bg2: #070c1f;
+  --fg: #eef4ff;
+  --dim: rgba(238, 244, 255, 0.74);
+  --accent: #5cf0ff;
+  --accent2: #79ffb3;
+  --gold: #ffd66e;
   --danger: #ff3d5e;
   --hudBg: rgba(0, 0, 0, 0.55);
   --shadow: rgba(0, 0, 0, 0.6);
   --px: 3px;
   --radius: 10px;
+  --glow: rgba(92, 240, 255, 0.14);
 }
 
 *,
@@ -25,7 +29,7 @@ body {
   margin: 0;
   font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto,
     sans-serif;
-  background: radial-gradient(1200px 800px at 50% 45%, #0a0f1a 0%, var(--bg) 55%),
+  background: radial-gradient(1200px 800px at 50% 45%, #0b1230 0%, var(--bg2) 40%, var(--bg) 75%),
     var(--bg);
   color: var(--fg);
   overflow: hidden;
@@ -36,6 +40,29 @@ body {
   text-rendering: geometricPrecision;
 }
 
+.power {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 60;
+  opacity: 1;
+  transform: scaleY(0.02);
+  filter: brightness(0.8) contrast(1.2);
+  pointer-events: none;
+}
+
+.power.is-off {
+  opacity: 1;
+  transform: scaleY(0.02);
+}
+
+.power.is-on {
+  opacity: 0;
+  transform: scaleY(1);
+  transition: opacity 240ms linear, transform 240ms steps(6, end);
+}
+
+.app {
 img,
 canvas,
 video {
@@ -61,13 +88,23 @@ video {
   place-items: center;
   padding: 48px;
   pointer-events: none;
+  filter: drop-shadow(0 0 28px var(--glow));
+  transform: perspective(900px) rotateX(0.2deg);
+}
+
+.app::before {
+  content: "";
+  position: absolute;
+  inset: -2%;
+  background: radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.03), transparent 55%);
+  pointer-events: none;
 }
 
 .screen {
   width: min(980px, 100%);
   max-height: min(620px, 72vh);
   padding: 28px 26px;
-  border: var(--px) solid rgba(232, 243, 255, 0.35);
+  border: var(--px) solid rgba(238, 244, 255, 0.33);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.5));
   box-shadow: 0 18px 80px var(--shadow);
   border-radius: var(--radius);
@@ -79,7 +116,7 @@ video {
   position: absolute;
   inset: -3px;
   border-radius: calc(var(--radius) + 2px);
-  border: 1px solid rgba(121, 255, 179, 0.2);
+  border: 1px solid rgba(92, 240, 255, 0.22);
   pointer-events: none;
 }
 
@@ -141,7 +178,7 @@ video {
 }
 
 .list .code {
-  color: var(--accent);
+  color: var(--accent2);
 }
 
 .hint {
@@ -223,6 +260,17 @@ canvas#logoCanvas {
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.45));
 }
 
+.hud.is-hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.hud:not(.is-hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 180ms linear, transform 180ms steps(4, end);
+}
+
 .hud__top {
   display: flex;
   justify-content: space-between;
@@ -233,13 +281,17 @@ canvas#logoCanvas {
 .hud__bloc,
 .hud__keys,
 .hud__time {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.4;
   color: rgba(232, 243, 255, 0.9);
 }
 
 .hud__keys {
-  color: rgba(232, 243, 255, 0.75);
+  color: rgba(238, 244, 255, 0.9);
+  border: 2px solid rgba(92, 240, 255, 0.25);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .hud__bar {
@@ -254,7 +306,7 @@ canvas#logoCanvas {
 .hud__barFill {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(121, 255, 179, 0.9), rgba(121, 255, 179, 0.35));
+  background: linear-gradient(90deg, rgba(92, 240, 255, 0.95), rgba(121, 255, 179, 0.55));
   filter: saturate(1.2);
   transform-origin: left center;
 }
@@ -288,6 +340,10 @@ canvas#logoCanvas {
     rgba(0, 0, 0, 0.18) 3px
   );
   opacity: 0.35;
+}
+
+.crt__scanlines {
+  transform: translateZ(0);
 }
 
 .crt__flicker {
@@ -352,6 +408,28 @@ canvas#logoCanvas {
 .wipe.is-wiping {
   opacity: 1;
   animation: wipeDown 520ms steps(10, end) both;
+}
+
+body.is-flickering .crt__flicker {
+  animation: navFlicker 480ms steps(8, end) both;
+}
+
+@keyframes navFlicker {
+  0% {
+    opacity: 0.0;
+  }
+  15% {
+    opacity: 0.22;
+  }
+  30% {
+    opacity: 0.04;
+  }
+  55% {
+    opacity: 0.18;
+  }
+  100% {
+    opacity: 0.02;
+  }
 }
 
 @keyframes wipeDown {
