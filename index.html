@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>M1 Thesis Defense — Pixel Deck</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <noscript>
+      <div class="noscript">
+        Ce site nécessite JavaScript pour la navigation clavier et les transitions.
+      </div>
+    </noscript>
+
+    <div id="app" class="app" aria-live="polite"></div>
+
+    <div class="hud" aria-hidden="true">
+      <div class="hud__top">
+        <div class="hud__bloc" id="hudBloc">BLOC —</div>
+        <div class="hud__keys" id="hudKeys">← → / Enter</div>
+      </div>
+      <div class="hud__bar" role="presentation">
+        <div class="hud__barFill" id="hudBarFill"></div>
+      </div>
+      <div class="hud__time" id="hudTime">00:00 / 40:00</div>
+    </div>
+
+    <div class="crt" aria-hidden="true">
+      <div class="crt__vignette"></div>
+      <div class="crt__scanlines"></div>
+      <div class="crt__flicker"></div>
+      <div class="wipe" id="wipe"></div>
+    </div>
+
+    <script src="./script.js" defer></script>
+  </body>
+</html>
+
