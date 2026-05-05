@@ -108,8 +108,11 @@
   function renderBootScreen() {
     app.replaceChildren(
       h("div", { class: "screen boot" }, [
-        h("div", { class: "boot__canvasWrap" }, [
-          h("canvas", { id: "logoCanvas", width: "320", height: "140" }, []),
+        h("div", { class: "boot__stack" }, [
+          h("div", { class: "boot__canvasWrap" }, [
+            h("canvas", { id: "logoCanvas", width: "320", height: "140" }, []),
+          ]),
+          h("div", { class: "boot__pressRow", id: "bootPressRow", style: "display: none" }, []),
         ]),
         h("div", { class: "boot__status" }, [
           document.createTextNode("CRT POWER-ON SEQUENCE"),
@@ -124,6 +127,10 @@
     void runBootSequence(canvas);
   }
 
+  /** Low-res pixel buffer size (logo + noise wipe share this grid). */
+  const BOOT_BW = 128;
+  const BOOT_BH = 56;
+
   function makeLogoBitmap(width, height) {
     const off = document.createElement("canvas");
     off.width = width;
@@ -132,20 +139,55 @@
     if (!ctx) return null;
 
     ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, width, height);
 
-    ctx.fillStyle = "#000";
+    const g = ctx.createLinearGradient(0, 0, 0, height);
+    g.addColorStop(0, "#1a080c");
+    g.addColorStop(1, "#050203");
+    ctx.fillStyle = g;
     ctx.fillRect(0, 0, width, height);
 
+    const cx = Math.floor(width * 0.5);
+    const cy = Math.floor(height * 0.52);
+    const fontPx = Math.max(10, Math.floor(height * 0.46));
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#fff1df";
-    ctx.font = `900 ${Math.floor(height * 0.54)}px "Press Start 2P", monospace`;
-    ctx.fillText("HELL-o", Math.floor(width * 0.5), Math.floor(height * 0.52));
+    ctx.font = `900 ${fontPx}px "Press Start 2P", monospace`;
 
-    // underline glow hint
-    ctx.fillStyle = "rgba(255,58,58,0.75)";
-    ctx.fillRect(Math.floor(width * 0.18), Math.floor(height * 0.84), Math.floor(width * 0.64), 2);
+    const label = "HELL-o";
+    // Chunky pixel-game outline: dark → hot red → bone fill
+    const outline = [
+      [-2, 0],
+      [2, 0],
+      [0, -2],
+      [0, 2],
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+      [1, 1],
+    ];
+    ctx.fillStyle = "#1a0506";
+    for (const [ox, oy] of outline) ctx.fillText(label, cx + ox, cy + oy);
+    ctx.fillStyle = "rgba(255,58,58,0.92)";
+    for (const [ox, oy] of [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ])
+      ctx.fillText(label, cx + ox, cy + oy);
+    ctx.fillStyle = "rgba(255,181,97,0.35)";
+    ctx.fillText(label, cx, cy - 1);
+    ctx.fillStyle = "#fff1df";
+    ctx.fillText(label, cx, cy);
+
+    // Ember underline (two-line pixel bar)
+    const bx = Math.floor(width * 0.14);
+    const bwBar = Math.floor(width * 0.72);
+    const by = Math.floor(height * 0.82);
+    ctx.fillStyle = "rgba(255,58,58,0.95)";
+    ctx.fillRect(bx, by, bwBar, 2);
+    ctx.fillStyle = "rgba(255,122,47,0.65)";
+    ctx.fillRect(bx, by + 2, bwBar, 1);
 
     return ctx.getImageData(0, 0, width, height);
   }
@@ -154,6 +196,47 @@
     return Math.floor(Math.random() * n);
   }
 
+  function warmNoiseAt(i, frame) {
+    const flick = ((i * 13 + frame * 13) & 255) / 255;
+    const r = 55 + randInt(200);
+    const g = Math.floor(r * (0.22 + 0.12 * flick));
+    const b = Math.floor(r * (0.08 + 0.08 * flick));
+    return [r, g, b, 255];
+  }
+
+  function seedNoiseBuffer(len) {
+    const buf = new Uint8ClampedArray(len);
+    for (let i = 0; i < len; i += 4) {
+      const [r, g, b, a] = warmNoiseAt(i, 0);
+      buf[i] = r;
+      buf[i + 1] = g;
+      buf[i + 2] = b;
+      buf[i + 3] = a;
+    }
+    return buf;
+  }
+
+  function drawLowResToCanvas(canvas, imageDataBwBh) {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.imageSmoothingEnabled = false;
+    const tmp = document.createElement("canvas");
+    tmp.width = BOOT_BW;
+    tmp.height = BOOT_BH;
+    const tctx = tmp.getContext("2d");
+    if (!tctx) return;
+    tctx.putImageData(imageDataBwBh, 0, 0);
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(tmp, 0, 0, BOOT_BW, BOOT_BH, 0, 0, w, h);
+  }
+
+  /**
+   * Logo is pre-rendered; noise sits on top and is wiped away row-by-row (top → bottom)
+   * so the title is uncovered like CRT static clearing.
+   */
   function playScrambleBoot(canvas, durationMs = 2600) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return Promise.resolve();
@@ -162,33 +245,14 @@
     const h = canvas.height;
     ctx.imageSmoothingEnabled = false;
 
-    // Low-res buffer for crunchy pixels.
-    const bw = 128;
-    const bh = 56;
+    const bw = BOOT_BW;
+    const bh = BOOT_BH;
     const logo = makeLogoBitmap(bw, bh);
     if (!logo) return Promise.resolve();
 
-    // Start with full random noise.
-    const cur = new Uint8ClampedArray(logo.data.length);
-    for (let i = 0; i < cur.length; i += 4) {
-      const v = randInt(256);
-      cur[i] = v;
-      cur[i + 1] = v;
-      cur[i + 2] = v;
-      cur[i + 3] = 255;
-    }
-
-    // A permutation map: each destination pixel pulls from a random source at first.
-    const perm = new Uint32Array(bw * bh);
-    for (let i = 0; i < perm.length; i++) perm[i] = i;
-    for (let i = perm.length - 1; i > 0; i--) {
-      const j = randInt(i + 1);
-      const t = perm[i];
-      perm[i] = perm[j];
-      perm[j] = t;
-    }
-
-    const buf = new ImageData(cur, bw, bh);
+    const noiseBase = seedNoiseBuffer(bw * bh * 4);
+    const out = new Uint8ClampedArray(bw * bh * 4);
+    const outImg = new ImageData(out, bw, bh);
 
     const tmp = document.createElement("canvas");
     tmp.width = bw;
@@ -197,75 +261,90 @@
     if (!tctx) return Promise.resolve();
     tctx.imageSmoothingEnabled = false;
 
+    let frame = 0;
     const start = now();
 
     return new Promise((resolve) => {
-      function frame() {
-        const t = Math.min(1, (now() - start) / durationMs);
-        const ease = t * t * (3 - 2 * t); // smoothstep
+      function tickFrame() {
+        const elapsed = now() - start;
+        const t = Math.min(1, elapsed / durationMs);
+        const ease = t * t * (3 - 2 * t);
+        const revealFloat = ease * (bh + 1);
+        const revealInt = Math.floor(revealFloat);
+        const fringe = revealFloat - revealInt;
 
-        // How many pixels are "locked in" (correct mapping + correct color).
-        const locked = Math.floor(perm.length * ease);
+        const scroll = Math.floor(elapsed / 22);
 
-        // Update some random pixels each frame.
-        const updates = Math.max(700, Math.floor(perm.length / 8));
-        const warm = 0.22 * (1 - ease);
-
-        for (let k = 0; k < updates; k++) {
-          const di = randInt(perm.length);
-          const base = di * 4;
-
-          if (di < locked) {
-            const si = perm[di] * 4;
-            cur[base] = logo.data[si];
-            cur[base + 1] = logo.data[si + 1];
-            cur[base + 2] = logo.data[si + 2];
-            cur[base + 3] = 255;
-          } else {
-            // noise that gradually becomes warm ember noise
-            if (Math.random() < warm) {
-              const r = 70 + randInt(186);
-              const g = Math.floor(r * 0.28);
-              const b = Math.floor(r * 0.12);
-              cur[base] = r;
-              cur[base + 1] = g;
-              cur[base + 2] = b;
-              cur[base + 3] = 255;
+        for (let y = 0; y < bh; y++) {
+          for (let x = 0; x < bw; x++) {
+            const di = (y * bw + x) * 4;
+            if (y < revealInt) {
+              out[di] = logo.data[di];
+              out[di + 1] = logo.data[di + 1];
+              out[di + 2] = logo.data[di + 2];
+              out[di + 3] = 255;
+            } else if (y === revealInt && fringe > 0) {
+              const mix = Math.min(1, fringe);
+              const srcY = (y - scroll + bh * 64) % bh;
+              const si = (srcY * bw + x) * 4;
+              const lr = logo.data[di];
+              const lg = logo.data[di + 1];
+              const lb = logo.data[di + 2];
+              const nr = noiseBase[si];
+              const ng = noiseBase[si + 1];
+              const nb = noiseBase[si + 2];
+              out[di] = Math.round(nr + (lr - nr) * mix);
+              out[di + 1] = Math.round(ng + (lg - ng) * mix);
+              out[di + 2] = Math.round(nb + (lb - nb) * mix);
+              out[di + 3] = 255;
             } else {
-              const v = randInt(256);
-              cur[base] = v;
-              cur[base + 1] = v;
-              cur[base + 2] = v;
-              cur[base + 3] = 255;
+              const srcY = (y - scroll + bh * 64) % bh;
+              const si = (srcY * bw + x) * 4;
+              let r = noiseBase[si];
+              let gch = noiseBase[si + 1];
+              let b = noiseBase[si + 2];
+              if ((x + y + frame) % 9 === 0) {
+                const [nr, ng, nb] = warmNoiseAt(di, frame);
+                r = nr;
+                gch = ng;
+                b = nb;
+              }
+              out[di] = r;
+              out[di + 1] = gch;
+              out[di + 2] = b;
+              out[di + 3] = 255;
             }
           }
         }
 
-        buf.data.set(cur);
-        tctx.putImageData(buf, 0, 0);
-
-        ctx.clearRect(0, 0, w, h);
-        ctx.fillStyle = "rgba(0,0,0,0.35)";
+        outImg.data.set(out);
+        tctx.putImageData(outImg, 0, 0);
+        ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, w, h);
-        ctx.globalAlpha = 1;
         ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
 
-        if (t < 1) requestAnimationFrame(frame);
+        frame++;
+        if (t < 1) requestAnimationFrame(tickFrame);
         else resolve();
       }
 
-      requestAnimationFrame(frame);
+      requestAnimationFrame(tickFrame);
     });
   }
 
   async function runBootSequence(canvas) {
     const status = document.getElementById("bootStatus");
+    const pressRow = document.getElementById("bootPressRow");
     if (!(status instanceof HTMLElement)) return;
 
     // HUD hidden during boot; timer not running.
     hud.classList.add("is-hidden");
     hudKeys.textContent = "Press Enter";
     state.pressStartArmed = false;
+    if (pressRow instanceof HTMLElement) {
+      pressRow.style.display = "none";
+      pressRow.replaceChildren();
+    }
 
     power.classList.add("is-off");
     status.textContent = "Powering on...";
@@ -286,10 +365,19 @@
     status.textContent = "Tuning signal...";
     await playScrambleBoot(canvas, 2600);
 
-    status.replaceChildren(
-      document.createTextNode("PRESS START "),
-      h("span", { class: "blink", text: "▮" })
-    );
+    const logoFinal = makeLogoBitmap(BOOT_BW, BOOT_BH);
+    if (logoFinal) drawLowResToCanvas(canvas, logoFinal);
+
+    await new Promise((r) => setTimeout(r, 1000));
+
+    status.textContent = "";
+    if (pressRow instanceof HTMLElement) {
+      pressRow.replaceChildren(
+        document.createTextNode("PRESS START "),
+        h("span", { class: "blink", text: "▮" })
+      );
+      pressRow.style.display = "block";
+    }
     state.pressStartArmed = true;
   }
 
