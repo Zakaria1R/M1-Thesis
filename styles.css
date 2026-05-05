@@ -1,17 +1,17 @@
 :root {
-  --bg: #050815;
-  --bg2: #070c1f;
-  --fg: #eef4ff;
-  --dim: rgba(238, 244, 255, 0.74);
-  --accent: #5cf0ff;
-  --accent2: #79ffb3;
-  --gold: #ffd66e;
+  --bg: #030102;
+  --bg2: #0b0204;
+  --fg: #fff1df; /* bone white */
+  --dim: rgba(255, 241, 223, 0.76);
+  --accent: #ff3a3a; /* hot red */
+  --accent2: #ff7a2f; /* ember orange */
+  --gold: #ffb561; /* ember gold */
   --danger: #ff3d5e;
   --hudBg: rgba(0, 0, 0, 0.55);
   --shadow: rgba(0, 0, 0, 0.6);
   --px: 3px;
   --radius: 10px;
-  --glow: rgba(92, 240, 255, 0.14);
+  --glow: rgba(255, 58, 58, 0.16);
 }
 
 *,
@@ -29,7 +29,7 @@ body {
   margin: 0;
   font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto,
     sans-serif;
-  background: radial-gradient(1200px 800px at 50% 45%, #0b1230 0%, var(--bg2) 40%, var(--bg) 75%),
+  background: radial-gradient(1200px 800px at 50% 45%, #1a0608 0%, var(--bg2) 40%, var(--bg) 78%),
     var(--bg);
   color: var(--fg);
   overflow: hidden;
@@ -86,7 +86,7 @@ video {
   width: 100%;
   display: grid;
   place-items: center;
-  padding: 48px;
+  padding: 0;
   pointer-events: none;
   filter: drop-shadow(0 0 28px var(--glow));
   transform: perspective(900px) rotateX(0.2deg);
@@ -101,27 +101,36 @@ video {
 }
 
 .screen {
-  width: min(980px, 100%);
-  max-height: min(620px, 72vh);
-  padding: 28px 26px;
-  border: var(--px) solid rgba(238, 244, 255, 0.33);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.5));
-  box-shadow: 0 18px 80px var(--shadow);
-  border-radius: var(--radius);
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  display: grid;
+  place-items: center;
   position: relative;
 }
 
-.screen::after {
+.panel {
+  width: min(1200px, 94vw);
+  max-height: min(760px, 82vh);
+  padding: 34px 32px;
+  border: var(--px) solid rgba(255, 241, 223, 0.22);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.76), rgba(0, 0, 0, 0.52));
+  box-shadow: 0 22px 90px rgba(0, 0, 0, 0.78);
+  border-radius: 16px;
+  position: relative;
+}
+
+.panel::after {
   content: "";
   position: absolute;
   inset: -3px;
-  border-radius: calc(var(--radius) + 2px);
-  border: 1px solid rgba(92, 240, 255, 0.22);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 58, 58, 0.18);
   pointer-events: none;
 }
 
 .title {
-  font-size: clamp(18px, 3vw, 28px);
+  font-size: clamp(18px, 2.8vw, 30px);
   line-height: 1.35;
   margin: 0 0 16px 0;
   letter-spacing: 0.02em;
@@ -155,7 +164,7 @@ video {
 }
 
 .pill b {
-  color: var(--accent);
+  color: var(--gold);
   font-weight: 400;
 }
 
@@ -169,16 +178,21 @@ video {
 
 .list li {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr;
   gap: 12px;
   padding: 10px 12px;
-  border: 2px dashed rgba(232, 243, 255, 0.18);
-  background: rgba(0, 0, 0, 0.22);
+  border: 2px dashed rgba(255, 122, 47, 0.22);
+  background: rgba(0, 0, 0, 0.24);
   border-radius: 12px;
 }
 
-.list .code {
-  color: var(--accent2);
+.bullet {
+  width: 10px;
+  height: 10px;
+  margin-top: 3px;
+  background: linear-gradient(180deg, rgba(255, 58, 58, 0.95), rgba(255, 122, 47, 0.75));
+  border: 2px solid rgba(255, 241, 223, 0.12);
+  box-shadow: 0 0 18px rgba(255, 58, 58, 0.25);
 }
 
 .hint {
@@ -209,7 +223,7 @@ video {
 .boot__canvasWrap {
   width: min(520px, 95vw);
   aspect-ratio: 16 / 7;
-  border: var(--px) solid rgba(232, 243, 255, 0.28);
+  border: var(--px) solid rgba(255, 241, 223, 0.2);
   background: rgba(0, 0, 0, 0.45);
   border-radius: 16px;
   display: grid;
@@ -248,11 +262,10 @@ canvas#logoCanvas {
   position: fixed;
   top: 14px;
   left: 14px;
-  right: 14px;
-  width: min(980px, calc(100% - 28px));
-  margin: 0 auto;
+  width: min(360px, calc(100% - 28px));
+  margin: 0;
   padding: 10px 12px 10px 12px;
-  border: 2px solid rgba(232, 243, 255, 0.22);
+  border: 2px solid rgba(255, 58, 58, 0.25);
   background: var(--hudBg);
   border-radius: 14px;
   z-index: 40;
@@ -283,12 +296,12 @@ canvas#logoCanvas {
 .hud__time {
   font-size: 11px;
   line-height: 1.4;
-  color: rgba(232, 243, 255, 0.9);
+  color: rgba(255, 241, 223, 0.92);
 }
 
 .hud__keys {
-  color: rgba(238, 244, 255, 0.9);
-  border: 2px solid rgba(92, 240, 255, 0.25);
+  color: rgba(255, 241, 223, 0.96);
+  border: 2px solid rgba(255, 122, 47, 0.3);
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.35);
@@ -306,7 +319,7 @@ canvas#logoCanvas {
 .hud__barFill {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(92, 240, 255, 0.95), rgba(121, 255, 179, 0.55));
+  background: linear-gradient(90deg, rgba(255, 58, 58, 0.95), rgba(255, 122, 47, 0.75));
   filter: saturate(1.2);
   transform-origin: left center;
 }
@@ -339,11 +352,25 @@ canvas#logoCanvas {
     rgba(0, 0, 0, 0.0) 2px,
     rgba(0, 0, 0, 0.18) 3px
   );
-  opacity: 0.35;
+  opacity: 0.28;
 }
 
 .crt__scanlines {
   transform: translateZ(0);
+}
+
+.crt__scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 58, 58, 0.03) 0px,
+    rgba(255, 58, 58, 0.0) 4px,
+    rgba(255, 122, 47, 0.02) 6px
+  );
+  opacity: 0.25;
+  mix-blend-mode: screen;
 }
 
 .crt__flicker {
@@ -447,5 +474,66 @@ body.is-flickering .crt__flicker {
   .wipe.is-wiping {
     animation: none !important;
   }
+}
+
+.screen--title {
+  place-items: center;
+}
+
+.panel--title {
+  width: min(980px, 92vw);
+  text-align: center;
+}
+
+.titleArt {
+  padding: 10px 0 18px 0;
+}
+
+.titleArt__kicker {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 241, 223, 0.7);
+  margin-bottom: 14px;
+}
+
+.gameTitle {
+  margin: 0;
+  font-size: clamp(44px, 8vw, 92px);
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.9), 0 0 28px rgba(255, 58, 58, 0.35);
+}
+
+.gameTitle::after {
+  content: "";
+  display: block;
+  height: 6px;
+  width: min(520px, 70%);
+  margin: 18px auto 0 auto;
+  background: linear-gradient(90deg, rgba(255, 58, 58, 0.0), rgba(255, 58, 58, 0.85), rgba(255, 122, 47, 0.75), rgba(255, 58, 58, 0.0));
+  border-radius: 999px;
+  opacity: 0.9;
+}
+
+.titleArt__sub {
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(255, 241, 223, 0.9);
+  animation: blink 1.05s steps(1, end) infinite;
+}
+
+.titleMeta {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 2px dashed rgba(255, 122, 47, 0.25);
+  display: grid;
+  gap: 10px;
+}
+
+.titleMeta__line {
+  font-size: 11px;
+  line-height: 1.7;
+  color: rgba(255, 241, 223, 0.82);
 }
 

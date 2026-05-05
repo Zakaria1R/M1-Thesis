@@ -30,7 +30,7 @@
 
   const deckInfo = {
     name: "Zakaria Rahmouni",
-    thesisTitle: "Titre du mémoire (à compléter)",
+    thesisTitle: "HELL-o",
     rncp: "RNCP39855",
     track: "Parcours Game Design",
     school: "ITECOM Art Design",
@@ -288,31 +288,23 @@
 
     if (world === 0) {
       app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("h1", { class: "title", text: deckInfo.thesisTitle }),
-          h("p", {
-            class: "subtitle",
-            text: `${deckInfo.rncp} — ${deckInfo.track} — ${deckInfo.school}`,
-          }),
-          h("div", { class: "row" }, [
-            h("div", { class: "pill" }, [
-              h("b", { text: "NOM" }),
-              document.createTextNode(` — ${deckInfo.name}`),
+        h("div", { class: "screen screen--title" }, [
+          h("div", { class: "panel panel--title" }, [
+            h("div", { class: "titleArt" }, [
+              h("div", { class: "titleArt__kicker", text: "MÉMOIRE / GAME TITLE" }),
+              h("h1", { class: "gameTitle", text: deckInfo.thesisTitle }),
+              h("div", { class: "titleArt__sub", text: "Press Enter" }),
             ]),
-            h("div", { class: "pill" }, [
-              h("b", { text: "PARCOURS" }),
-              document.createTextNode(` — ${deckInfo.track}`),
+            h("div", { class: "titleMeta" }, [
+              h("div", { class: "titleMeta__line", text: deckInfo.name }),
+              h("div", {
+                class: "titleMeta__line",
+                text: `${deckInfo.rncp} — ${deckInfo.track}`,
+              }),
+              h("div", { class: "titleMeta__line", text: deckInfo.school }),
             ]),
-            h("div", { class: "pill" }, [
-              h("b", { text: "ÉCOLE" }),
-              document.createTextNode(` — ${deckInfo.school}`),
-            ]),
+            commonHints,
           ]),
-          h("p", {
-            class: "hint",
-            text: "Press Enter to begin World 1.",
-          }),
-          commonHints,
         ])
       );
       return;
@@ -373,46 +365,48 @@
 
     const worldLists = {
       1: [
-        ["C1.1", "Contexte, objectifs, public & contraintes"],
-        ["C1.2", "Veille, références, benchmarks"],
-        ["C1.3", "Stratégie produit (vision, scope, risques)"],
-        ["C1.4", "Pitch, planning macro, jalons"],
-        ["C1.5", "Itérations & décisions (preuves)"],
+        "Contexte, objectifs, public & contraintes",
+        "Veille, références, benchmarks",
+        "Stratégie produit (vision, scope, risques)",
+        "Pitch, planning macro, jalons",
+        "Itérations & décisions (preuves)",
       ],
       2: [
-        ["C2.1", "Concept, intentions & promesse d'expérience"],
-        ["C2.2", "Mécaniques, boucles, règles & balance"],
-        ["C2.3", "UX flows, wireframes, prototypage"],
-        ["C2.4", "Content/Level design & progression"],
-        ["C2.5", "Documentation (GDD, specs, pipeline)"],
-        ["C2.6", "Playtests, retours & ajustements"],
+        "Concept, intentions & promesse d'expérience",
+        "Mécaniques, boucles, règles & balance",
+        "UX flows, wireframes, prototypage",
+        "Content/Level design & progression",
+        "Documentation (GDD, specs, pipeline)",
+        "Playtests, retours & ajustements",
       ],
       3: [
-        ["C3.1", "Pilotage: organisation, sprint/jalons"],
-        ["C3.2", "Communication, feedback loops, reporting"],
-        ["C3.3", "Qualité: risques, bugs, critères d'acceptation"],
-        ["C3.4", "Livraison: build, démo, rétrospective"],
+        "Pilotage: organisation, sprint/jalons",
+        "Communication, feedback loops, reporting",
+        "Qualité: risques, bugs, critères d'acceptation",
+        "Livraison: build, démo, rétrospective",
       ],
       5: [
-        ["RSE", "Responsabilité: impact & limites"],
-        ["RSE", "Accessibilité & inclusion (UX/UI)"],
-        ["RSE", "Éthique, données & sobriété numérique"],
+        "Responsabilité: impact & limites",
+        "Accessibilité & inclusion (UX/UI)",
+        "Éthique, données & sobriété numérique",
       ],
     };
 
-    const listItems = (worldLists[world] || []).map(([code, label]) =>
-      h("li", {}, [h("span", { text: label }), h("span", { class: "code", text: code })])
+    const listItems = (worldLists[world] || []).map((label) =>
+      h("li", {}, [h("span", { class: "bullet" }, []), h("span", { text: label })])
     );
 
     app.replaceChildren(
       h("div", { class: "screen" }, [
-        h("h2", { class: "title", text: title }),
-        h("p", {
-          class: "subtitle",
-          text: "Slide deck keyboard-only — placeholder content to be replaced with your final bullets.",
-        }),
-        h("ul", { class: "list" }, listItems),
-        commonHints,
+        h("div", { class: "panel" }, [
+          h("h2", { class: "title", text: title }),
+          h("p", {
+            class: "subtitle",
+            text: "Placeholder bullets (à remplacer) — style HELL-o.",
+          }),
+          h("ul", { class: "list" }, listItems),
+          commonHints,
+        ]),
       ])
     );
   }
