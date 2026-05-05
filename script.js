@@ -128,8 +128,8 @@
   }
 
   /** Low-res pixel buffer size (logo + noise wipe share this grid). */
-  const BOOT_BW = 128;
-  const BOOT_BH = 56;
+  const BOOT_BW = 192;
+  const BOOT_BH = 84;
 
   function makeLogoBitmap(width, height) {
     const off = document.createElement("canvas");
@@ -189,7 +189,51 @@
     ctx.fillStyle = "rgba(255,122,47,0.65)";
     ctx.fillRect(bx, by + 2, bwBar, 1);
 
-    return ctx.getImageData(0, 0, width, height);
+    return quantizeLogoToPixelArt(ctx.getImageData(0, 0, width, height));
+  }
+
+  /**
+   * Snap anti-aliased canvas text to a small HELL-o palette so revealed rows read as crisp letters.
+   */
+  function quantizeLogoToPixelArt(img) {
+    const d = img.data;
+    const BG = [20, 8, 12];
+    const palette = [
+      [255, 58, 58], // hot red
+      [255, 122, 47], // ember
+      [255, 181, 97], // gold
+      [255, 241, 223], // bone
+    ];
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i];
+      const g = d[i + 1];
+      const b = d[i + 2];
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      if (lum < 46) {
+        d[i] = BG[0];
+        d[i + 1] = BG[1];
+        d[i + 2] = BG[2];
+        d[i + 3] = 255;
+        continue;
+      }
+      let best = palette[0];
+      let bestD = 1e9;
+      for (const c of palette) {
+        const dr = r - c[0];
+        const dg = g - c[1];
+        const db = b - c[2];
+        const dist = dr * dr + dg * dg + db * db;
+        if (dist < bestD) {
+          bestD = dist;
+          best = c;
+        }
+      }
+      d[i] = best[0];
+      d[i + 1] = best[1];
+      d[i + 2] = best[2];
+      d[i + 3] = 255;
+    }
+    return img;
   }
 
   function randInt(n) {
@@ -234,8 +278,8 @@
   }
 
   /**
-   * Logo is pre-rendered; noise sits on top and is wiped away row-by-row (top → bottom)
-   * so the title is uncovered like CRT static clearing.
+   * Logo bitmap is drawn underneath logically: each fully revealed row is copied verbatim from
+   * the logo ImageData (no blending). Unrevealed rows = scrolling warm noise only.
    */
   function playScrambleBoot(canvas, durationMs = 2600) {
     const ctx = canvas.getContext("2d");
@@ -269,33 +313,18 @@
         const elapsed = now() - start;
         const t = Math.min(1, elapsed / durationMs);
         const ease = t * t * (3 - 2 * t);
-        const revealFloat = ease * (bh + 1);
-        const revealInt = Math.floor(revealFloat);
-        const fringe = revealFloat - revealInt;
+        // Integer row count only: no fringe blend (that was smearing non-letter colors into glyphs).
+        const revealRows = Math.min(bh, Math.ceil(ease * bh));
 
         const scroll = Math.floor(elapsed / 22);
 
         for (let y = 0; y < bh; y++) {
           for (let x = 0; x < bw; x++) {
             const di = (y * bw + x) * 4;
-            if (y < revealInt) {
+            if (y < revealRows) {
               out[di] = logo.data[di];
               out[di + 1] = logo.data[di + 1];
               out[di + 2] = logo.data[di + 2];
-              out[di + 3] = 255;
-            } else if (y === revealInt && fringe > 0) {
-              const mix = Math.min(1, fringe);
-              const srcY = (y - scroll + bh * 64) % bh;
-              const si = (srcY * bw + x) * 4;
-              const lr = logo.data[di];
-              const lg = logo.data[di + 1];
-              const lb = logo.data[di + 2];
-              const nr = noiseBase[si];
-              const ng = noiseBase[si + 1];
-              const nb = noiseBase[si + 2];
-              out[di] = Math.round(nr + (lr - nr) * mix);
-              out[di + 1] = Math.round(ng + (lg - ng) * mix);
-              out[di + 2] = Math.round(nb + (lb - nb) * mix);
               out[di + 3] = 255;
             } else {
               const srcY = (y - scroll + bh * 64) % bh;
@@ -325,7 +354,15 @@
 
         frame++;
         if (t < 1) requestAnimationFrame(tickFrame);
-        else resolve();
+        else {
+          out.set(logo.data);
+          outImg.data.set(out);
+          tctx.putImageData(outImg, 0, 0);
+          ctx.fillStyle = "#000";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
+          resolve();
+        }
       }
 
       requestAnimationFrame(tickFrame);
@@ -358,6 +395,15 @@
     document.body.classList.add("is-flickering");
     await new Promise((r) => setTimeout(r, 260));
     document.body.classList.remove("is-flickering");
+
+    if (document.fonts && document.fonts.ready) {
+      try {
+        await document.fonts.load(`900 ${Math.max(10, Math.floor(BOOT_BH * 0.46))}px "Press Start 2P"`);
+      } catch (_) {
+        /* ignore */
+      }
+      await document.fonts.ready;
+    }
 
     // Auto-play scramble → unscramble → logo (no user input).
     status.textContent = "Warming up...";
