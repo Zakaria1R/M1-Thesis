@@ -482,8 +482,8 @@ video {
 }
 
 .boot__canvasWrap {
-  width: min(520px, 95vw);
-  aspect-ratio: 16 / 7;
+  width: min(680px, 96vw);
+  aspect-ratio: 16 / 6;
   border: var(--px) solid rgba(255, 241, 223, 0.2);
   background: rgba(0, 0, 0, 0.45);
   border-radius: 16px;
@@ -493,7 +493,7 @@ video {
 }
 
 canvas#logoCanvas {
-  width: 90%;
+  width: 92%;
   height: auto;
   image-rendering: pixelated;
 }
