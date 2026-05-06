@@ -153,6 +153,7 @@ video {
   display: grid;
   place-items: center;
   position: relative;
+  pointer-events: auto;
 }
 
 .panel {
@@ -429,6 +430,23 @@ video {
   background: rgba(0, 0, 0, 0.22);
   padding: 14px 14px;
   box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: border-color 120ms linear, background 120ms linear, box-shadow 120ms linear;
+}
+
+.levelCard:hover {
+  border-color: rgba(255, 122, 47, 0.45);
+  background: rgba(255, 58, 58, 0.08);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 58, 58, 0.12);
+}
+
+.levelCard:focus {
+  outline: 2px solid rgba(255, 122, 47, 0.65);
+  outline-offset: 2px;
+}
+
+.levelCard:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .levelCard__n {
@@ -521,17 +539,17 @@ canvas#logoCanvas {
 
 .hud {
   position: fixed;
-  top: 14px;
-  left: 14px;
-  width: min(360px, calc(100% - 28px));
+  top: 10px;
+  left: 10px;
+  width: min(248px, calc(100% - 20px));
   margin: 0;
-  padding: 10px 12px 10px 12px;
+  padding: 6px 8px 7px 8px;
   border: 2px solid rgba(255, 58, 58, 0.25);
   background: var(--hudBg);
-  border-radius: 14px;
+  border-radius: 10px;
   z-index: 40;
   pointer-events: none;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.4));
 }
 
 .hud.is-hidden {
@@ -548,29 +566,37 @@ canvas#logoCanvas {
 .hud__top {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
   align-items: baseline;
+  flex-wrap: wrap;
 }
 
 .hud__bloc,
 .hud__keys,
 .hud__time {
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: 8px;
+  line-height: 1.35;
   color: rgba(255, 241, 223, 0.92);
+}
+
+.hud__bloc {
+  min-width: 0;
+  flex: 1 1 auto;
+  word-break: break-word;
 }
 
 .hud__keys {
   color: rgba(255, 241, 223, 0.96);
   border: 2px solid rgba(255, 122, 47, 0.3);
-  padding: 6px 10px;
+  padding: 3px 6px;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
 }
 
 .hud__bar {
-  height: 10px;
-  margin-top: 10px;
+  height: 6px;
+  margin-top: 6px;
   border-radius: 999px;
   background: rgba(232, 243, 255, 0.12);
   border: 2px solid rgba(232, 243, 255, 0.18);
@@ -586,7 +612,8 @@ canvas#logoCanvas {
 }
 
 .hud__time {
-  margin-top: 8px;
+  margin-top: 5px;
+  font-size: 7px;
   color: rgba(232, 243, 255, 0.75);
 }
 

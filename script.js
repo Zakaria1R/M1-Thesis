@@ -507,13 +507,33 @@
         ["WORLD 5", "Responsabilité & RSE"],
         ["WORLD 6", "Bilan / Game Over"],
       ];
-      const cards = levels.map(([n, t]) =>
-        h("div", { class: "levelCard" }, [
-          h("div", { class: "levelCard__n", text: n }),
-          h("div", { class: "levelCard__t", text: t }),
-          h("div", { class: "levelCard__bar" }, [h("div", {}, [])]),
-        ])
-      );
+      const cards = levels.map(([n, t], i) => {
+        const targetWorld = i + 2;
+        const pickWorld = () => {
+          void goToWorld(targetWorld);
+        };
+        return h(
+          "div",
+          {
+            class: "levelCard",
+            role: "button",
+            tabindex: "0",
+            "aria-label": `${n}: ${t}`,
+            onclick: pickWorld,
+            onkeydown: (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                pickWorld();
+              }
+            },
+          },
+          [
+            h("div", { class: "levelCard__n", text: n }),
+            h("div", { class: "levelCard__t", text: t }),
+            h("div", { class: "levelCard__bar" }, [h("div", {}, [])]),
+          ]
+        );
+      });
 
       app.replaceChildren(
         h("div", { class: "screen" }, [
