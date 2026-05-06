@@ -30,6 +30,8 @@
     pressStartArmed: false,
     deckStartedAt: null,
     transitionLock: false,
+    bootLogoLoopRunning: false,
+    bootLogoRafId: 0,
   };
 
   const deckInfo = {
@@ -273,31 +275,34 @@
     return [c[0], c[1], c[2], 255];
   }
 
-  function drawLowResToCanvas(canvas, imageDataBwBh) {
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const w = canvas.width;
-    const h = canvas.height;
-    ctx.imageSmoothingEnabled = false;
-    const tmp = document.createElement("canvas");
-    tmp.width = BOOT_BW;
-    tmp.height = BOOT_BH;
-    const tctx = tmp.getContext("2d");
-    if (!tctx) return;
-    tctx.putImageData(imageDataBwBh, 0, 0);
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(tmp, 0, 0, BOOT_BW, BOOT_BH, 0, 0, w, h);
+  function smoothstep01(t) {
+    const x = Math.min(1, Math.max(0, t));
+    return x * x * (3 - 2 * x);
+  }
+
+  function pixelStagger01(x, y) {
+    let h = Math.imul(x, 1540483477) ^ Math.imul(y, 2654435761);
+    h ^= h >>> 16;
+    h = Math.imul(h, 2246822507);
+    h ^= h >>> 13;
+    h >>>= 0;
+    return (h % 977) / 976;
+  }
+
+  function stopBootLogoLoop() {
+    state.bootLogoLoopRunning = false;
+    cancelAnimationFrame(state.bootLogoRafId);
+    state.bootLogoRafId = 0;
   }
 
   /**
-   * Logo bitmap is drawn underneath logically: each fully revealed row is copied verbatim from
-   * the logo ImageData (no blending). Unrevealed rows = fixed per-pixel scramble (same
-   * treatment over letter pixels so nothing reads as HELL-o until the scan passes).
+   * Boot logo: loop scramble → pixels resolve into HELL-o → hold → unscramble → repeat.
    */
-  function playScrambleBoot(canvas, durationMs = 2600) {
+  function startBootPixelAssembleLoop(canvas) {
     const ctx = canvas.getContext("2d");
-    if (!ctx) return Promise.resolve();
+    if (!ctx) return;
+
+    stopBootLogoLoop();
 
     const w = canvas.width;
     const h = canvas.height;
@@ -306,7 +311,28 @@
     const bw = BOOT_BW;
     const bh = BOOT_BH;
     const logo = makeLogoBitmap(bw, bh);
-    if (!logo) return Promise.resolve();
+    if (!logo) return;
+
+    const SCRAMBLE_HOLD_MS = 400;
+    const ASSEMBLE_MS = 2100;
+    const LOGO_HOLD_MS = 2800;
+    const DISASSEMBLE_MS = 1700;
+    const CYCLE_MS = SCRAMBLE_HOLD_MS + ASSEMBLE_MS + LOGO_HOLD_MS + DISASSEMBLE_MS;
+
+    const scramble = new Uint8ClampedArray(bw * bh * 4);
+    const stagger = new Float32Array(bw * bh);
+    for (let y = 0; y < bh; y++) {
+      for (let x = 0; x < bw; x++) {
+        const di = (y * bw + x) * 4;
+        const idx = y * bw + x;
+        const [r, gch, b, a] = staticScrambleAt(x, y);
+        scramble[di] = r;
+        scramble[di + 1] = gch;
+        scramble[di + 2] = b;
+        scramble[di + 3] = a;
+        stagger[idx] = pixelStagger01(x, y) * 0.9;
+      }
+    }
 
     const out = new Uint8ClampedArray(bw * bh * 4);
     const outImg = new ImageData(out, bw, bh);
@@ -315,57 +341,60 @@
     tmp.width = bw;
     tmp.height = bh;
     const tctx = tmp.getContext("2d");
-    if (!tctx) return Promise.resolve();
+    if (!tctx) return;
     tctx.imageSmoothingEnabled = false;
 
-    const start = now();
+    const t0 = SCRAMBLE_HOLD_MS;
+    const t1 = t0 + ASSEMBLE_MS;
+    const t2 = t1 + LOGO_HOLD_MS;
 
-    return new Promise((resolve) => {
-      function tickFrame() {
-        const elapsed = now() - start;
-        const t = Math.min(1, elapsed / durationMs);
-        const ease = t * t * (3 - 2 * t);
-        // Integer row count only: no fringe blend (that was smearing non-letter colors into glyphs).
-        const revealRows = Math.min(bh, Math.ceil(ease * bh));
+    const loopStart = now();
+    state.bootLogoLoopRunning = true;
 
-        for (let y = 0; y < bh; y++) {
-          for (let x = 0; x < bw; x++) {
-            const di = (y * bw + x) * 4;
-            if (y < revealRows) {
-              out[di] = logo.data[di];
-              out[di + 1] = logo.data[di + 1];
-              out[di + 2] = logo.data[di + 2];
-              out[di + 3] = 255;
-            } else {
-              const [r, gch, b, a] = staticScrambleAt(x, y);
-              out[di] = r;
-              out[di + 1] = gch;
-              out[di + 2] = b;
-              out[di + 3] = a;
-            }
-          }
-        }
+    function tickFrame() {
+      if (!state.bootLogoLoopRunning) return;
 
-        outImg.data.set(out);
-        tctx.putImageData(outImg, 0, 0);
-        ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, w, h);
-        ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
+      const cy = (now() - loopStart) % CYCLE_MS;
+      let u = 0;
+      if (cy < t0) u = 0;
+      else if (cy < t1) u = smoothstep01((cy - t0) / ASSEMBLE_MS);
+      else if (cy < t2) u = 1;
+      else u = 1 - smoothstep01((cy - t2) / DISASSEMBLE_MS);
 
-        if (t < 1) requestAnimationFrame(tickFrame);
-        else {
-          out.set(logo.data);
-          outImg.data.set(out);
-          tctx.putImageData(outImg, 0, 0);
-          ctx.fillStyle = "#000";
-          ctx.fillRect(0, 0, w, h);
-          ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
-          resolve();
+      const lg = logo.data;
+      for (let y = 0; y < bh; y++) {
+        for (let x = 0; x < bw; x++) {
+          const di = (y * bw + x) * 4;
+          const idx = y * bw + x;
+          const st = stagger[idx];
+          const denom = 1 - st + 1e-6;
+          const local = Math.min(1, Math.max(0, (u - st) / denom));
+          const k = smoothstep01(local);
+
+          const sr = scramble[di];
+          const sg = scramble[di + 1];
+          const sb = scramble[di + 2];
+          const lr = lg[di];
+          const lgch = lg[di + 1];
+          const lb = lg[di + 2];
+
+          out[di] = Math.round(sr + (lr - sr) * k);
+          out[di + 1] = Math.round(sg + (lgch - sg) * k);
+          out[di + 2] = Math.round(sb + (lb - sb) * k);
+          out[di + 3] = 255;
         }
       }
 
-      requestAnimationFrame(tickFrame);
-    });
+      outImg.data.set(out);
+      tctx.putImageData(outImg, 0, 0);
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
+
+      if (state.bootLogoLoopRunning) state.bootLogoRafId = requestAnimationFrame(tickFrame);
+    }
+
+    state.bootLogoRafId = requestAnimationFrame(tickFrame);
   }
 
   async function runBootSequence(canvas) {
@@ -404,16 +433,13 @@
       await document.fonts.ready;
     }
 
-    // Auto-play scramble → unscramble → logo (no user input).
+    // Auto-play looping pixel assemble / disassemble on the logo canvas.
     status.textContent = "Warming up...";
     await new Promise((r) => setTimeout(r, 120));
     status.textContent = "Tuning signal...";
-    await playScrambleBoot(canvas, 2600);
+    startBootPixelAssembleLoop(canvas);
 
-    const logoFinal = makeLogoBitmap(BOOT_BW, BOOT_BH);
-    if (logoFinal) drawLowResToCanvas(canvas, logoFinal);
-
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 900));
 
     status.textContent = "";
     if (pressRow instanceof HTMLElement) {
@@ -703,6 +729,7 @@
 
     if (!state.booted) {
       if (key === "Enter" && state.pressStartArmed) {
+        stopBootLogoLoop();
         state.booted = true;
         startDeckTimerIfNeeded();
         hud.classList.remove("is-hidden");
