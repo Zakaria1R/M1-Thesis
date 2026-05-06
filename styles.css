@@ -40,6 +40,53 @@ body {
   text-rendering: geometricPrecision;
 }
 
+.pixelCursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(3);
+  image-rendering: pixelated;
+  opacity: 0;
+  will-change: transform, left, top, opacity;
+}
+
+body.has-pointer .pixelCursor {
+  opacity: 0.95;
+}
+
+body.is-flickering .pixelCursor {
+  opacity: 0.7;
+}
+
+.pixelCursor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 1px;
+  height: 1px;
+  background: #fff;
+  /* 7x7 pixel-art X (centered) */
+  box-shadow:
+    -3px -3px 0 0 #fff,
+    -2px -2px 0 0 #ff3a3a,
+    -1px -1px 0 0 #fff,
+     0px  0px 0 0 #000,
+     1px  1px 0 0 #fff,
+     2px  2px 0 0 #ff3a3a,
+     3px  3px 0 0 #fff,
+    -3px  3px 0 0 #fff,
+    -2px  2px 0 0 #ff3a3a,
+    -1px  1px 0 0 #fff,
+     1px -1px 0 0 #fff,
+     2px -2px 0 0 #ff3a3a,
+     3px -3px 0 0 #fff;
+  filter: drop-shadow(0 0 6px rgba(255, 58, 58, 0.22));
+}
+
 .power {
   position: fixed;
   inset: 0;

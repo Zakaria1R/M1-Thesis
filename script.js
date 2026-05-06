@@ -197,19 +197,19 @@
    */
   function quantizeLogoToPixelArt(img) {
     const d = img.data;
-    const BG = [20, 8, 12];
+    const BG = [0, 0, 0];
     const palette = [
+      [0, 0, 0], // black
       [255, 58, 58], // hot red
-      [255, 122, 47], // ember
-      [255, 181, 97], // gold
       [255, 241, 223], // bone
+      [255, 255, 255], // pure white
     ];
     for (let i = 0; i < d.length; i += 4) {
       const r = d[i];
       const g = d[i + 1];
       const b = d[i + 2];
       const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-      if (lum < 46) {
+      if (lum < 50) {
         d[i] = BG[0];
         d[i + 1] = BG[1];
         d[i + 2] = BG[2];
@@ -241,11 +241,19 @@
   }
 
   function warmNoiseAt(i, frame) {
-    const flick = ((i * 13 + frame * 13) & 255) / 255;
-    const r = 55 + randInt(200);
-    const g = Math.floor(r * (0.22 + 0.12 * flick));
-    const b = Math.floor(r * (0.08 + 0.08 * flick));
-    return [r, g, b, 255];
+    const flick = ((i * 13 + frame * 9) & 255) / 255;
+    // Red/white/black CRT snow (with slight flicker variance)
+    const roll = (i * 1103515245 + frame * 12345) >>> 0;
+    const r0 = roll & 255;
+    if (r0 < 28) return [0, 0, 0, 255]; // occasional black pixels
+    if (r0 < 160) {
+      const w = 220 + Math.floor(35 * flick);
+      return [w, w, w, 255]; // whites
+    }
+    const rr = 215 + randInt(40);
+    const gg = 10 + randInt(25);
+    const bb = 10 + randInt(25);
+    return [rr, gg, bb, 255]; // reds
   }
 
   function seedNoiseBuffer(len) {
@@ -332,7 +340,31 @@
               let r = noiseBase[si];
               let gch = noiseBase[si + 1];
               let b = noiseBase[si + 2];
-              if ((x + y + frame) % 9 === 0) {
+
+              // Camouflage: seed the HELL-o pixels into the initial field,
+              // but snap them into the same red/white/black noise palette so the word
+              // is "already there" yet hard to read until the scan reveals rows.
+              const lr = logo.data[di];
+              const lg = logo.data[di + 1];
+              const lb = logo.data[di + 2];
+              const ll = 0.299 * lr + 0.587 * lg + 0.114 * lb;
+              if (ll > 70) {
+                const roll = ((x * 73856093) ^ (y * 19349663) ^ (frame * 83492791)) >>> 0;
+                const p = roll & 255;
+                if (p < 150) {
+                  r = 245;
+                  gch = 245;
+                  b = 245;
+                } else if (p < 230) {
+                  r = 255;
+                  gch = 58;
+                  b = 58;
+                } else {
+                  r = 0;
+                  gch = 0;
+                  b = 0;
+                }
+              } else if ((x + y + frame) % 11 === 0) {
                 const [nr, ng, nb] = warmNoiseAt(di, frame);
                 r = nr;
                 gch = ng;
@@ -729,6 +761,29 @@
   }
 
   function init() {
+    // Custom pixel-art cursor (small X) that follows pointer movement.
+    const cursor = document.createElement("div");
+    cursor.className = "pixelCursor";
+    cursor.setAttribute("aria-hidden", "true");
+    document.body.append(cursor);
+
+    function moveCursor(e) {
+      if (!(e instanceof PointerEvent)) return;
+      if (e.pointerType === "touch") return;
+      document.body.classList.add("has-pointer");
+      cursor.style.left = `${e.clientX}px`;
+      cursor.style.top = `${e.clientY}px`;
+    }
+
+    window.addEventListener("pointermove", moveCursor, { passive: true });
+    window.addEventListener(
+      "pointerleave",
+      () => {
+        document.body.classList.remove("has-pointer");
+      },
+      { passive: true }
+    );
+
     renderBootScreen();
     setHudForWorld(0);
     tick();
