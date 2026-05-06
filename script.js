@@ -456,14 +456,13 @@
     const title = worldMeta[world]?.hud ?? `WORLD ${world}`;
     setHudForWorld(world);
 
-    const titleHints = h("div", { class: "hint" }, [
+    const titleHints = h("div", { class: "hint hint--titleNav" }, [
       document.createTextNode("Navigation: "),
       h("kbd", { text: "←" }),
       document.createTextNode(" "),
       h("kbd", { text: "→" }),
       document.createTextNode(" "),
       h("kbd", { text: "Enter" }),
-      document.createTextNode(" (no mouse)"),
     ]);
 
     if (world === 0) {

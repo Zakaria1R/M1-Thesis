@@ -744,6 +744,14 @@ body.is-flickering .crt__flicker {
 .panel--title {
   width: min(980px, 92vw);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.hint--titleNav {
+  margin-top: auto;
+  margin-bottom: 0;
+  padding-top: 24px;
 }
 
 .titleArt {
