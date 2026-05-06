@@ -40,6 +40,8 @@
     rncp: "RNCP39855",
     track: "Parcours Game Design",
     school: "ITECOM Art Design",
+    supervisorsHeading: "ENCADRÉ PAR",
+    supervisors: ["SONIA BENSOULA", "DAPHNÉ LEJEUNE"],
   };
 
   const worldMeta = {
@@ -480,6 +482,12 @@
                 text: `${deckInfo.rncp} — ${deckInfo.track}`,
               }),
               h("div", { class: "titleMeta__line", text: deckInfo.school }),
+            ]),
+            h("div", { class: "titleEncadre" }, [
+              h("div", { class: "titleEncadre__label", text: deckInfo.supervisorsHeading }),
+              ...deckInfo.supervisors.map((n) =>
+                h("div", { class: "titleEncadre__name", text: `► ${n}` })
+              ),
             ]),
             titleHints,
           ]),
