@@ -148,12 +148,21 @@
 
     const cx = Math.floor(width * 0.5);
     const cy = Math.floor(height * 0.52);
-    const fontPx = Math.max(10, Math.floor(height * 0.46));
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = `900 ${fontPx}px "Press Start 2P", monospace`;
 
     const label = "HELL-o";
+
+    // Fit the label within the pixel buffer so it never clips.
+    // (Font rendering varies slightly between browsers/platforms.)
+    const maxLabelWidth = Math.floor(width * 0.86);
+    let fontPx = Math.max(10, Math.floor(height * 0.46));
+    for (let i = 0; i < 18; i++) {
+      ctx.font = `900 ${fontPx}px "Press Start 2P", monospace`;
+      const w = ctx.measureText(label).width;
+      if (w <= maxLabelWidth) break;
+      fontPx = Math.max(10, fontPx - 1);
+    }
     // Chunky pixel-game outline: dark → hot red → bone fill
     const outline = [
       [-2, 0],
