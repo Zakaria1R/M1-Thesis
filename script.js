@@ -245,36 +245,23 @@
     return img;
   }
 
-  function randInt(n) {
-    return Math.floor(Math.random() * n);
-  }
-
-  function warmNoiseAt(i, frame) {
-    const flick = ((i * 13 + frame * 9) & 255) / 255;
-    // Red/white/black CRT snow (with slight flicker variance)
-    const roll = (i * 1103515245 + frame * 12345) >>> 0;
-    const r0 = roll & 255;
-    if (r0 < 28) return [0, 0, 0, 255]; // occasional black pixels
+  /**
+   * Deterministic red/white/black scramble per pixel (no scroll bands or vertical bias).
+   * `byteIndex` is the ImageData index (multiple of 4); `frame` retints each tick.
+   */
+  function warmNoiseAt(byteIndex, frame) {
+    const h = (byteIndex * 2246822519 + frame * 3266489917 + 668265263) >>> 0;
+    const flick = (byteIndex * 13 + frame * 747796405) & 255;
+    const r0 = h & 255;
+    if (r0 < 28) return [0, 0, 0, 255];
     if (r0 < 160) {
-      const w = 220 + Math.floor(35 * flick);
-      return [w, w, w, 255]; // whites
+      const w = 215 + Math.floor((40 * flick) / 255);
+      return [w, w, w, 255];
     }
-    const rr = 215 + randInt(40);
-    const gg = 10 + randInt(25);
-    const bb = 10 + randInt(25);
-    return [rr, gg, bb, 255]; // reds
-  }
-
-  function seedNoiseBuffer(len) {
-    const buf = new Uint8ClampedArray(len);
-    for (let i = 0; i < len; i += 4) {
-      const [r, g, b, a] = warmNoiseAt(i, 0);
-      buf[i] = r;
-      buf[i + 1] = g;
-      buf[i + 2] = b;
-      buf[i + 3] = a;
-    }
-    return buf;
+    const rr = 205 + ((h >>> 8) & 50);
+    const gg = 8 + ((h >>> 16) & 24);
+    const bb = 8 + ((h >>> 24) & 24);
+    return [rr, gg, bb, 255];
   }
 
   function drawLowResToCanvas(canvas, imageDataBwBh) {
@@ -296,7 +283,8 @@
 
   /**
    * Logo bitmap is drawn underneath logically: each fully revealed row is copied verbatim from
-   * the logo ImageData (no blending). Unrevealed rows = scrolling warm noise only.
+   * the logo ImageData (no blending). Unrevealed rows = full-frame scrambled static (same
+   * treatment over letter pixels so nothing reads as HELL-o until the scan passes).
    */
   function playScrambleBoot(canvas, durationMs = 2600) {
     const ctx = canvas.getContext("2d");
@@ -311,7 +299,6 @@
     const logo = makeLogoBitmap(bw, bh);
     if (!logo) return Promise.resolve();
 
-    const noiseBase = seedNoiseBuffer(bw * bh * 4);
     const out = new Uint8ClampedArray(bw * bh * 4);
     const outImg = new ImageData(out, bw, bh);
 
@@ -333,8 +320,6 @@
         // Integer row count only: no fringe blend (that was smearing non-letter colors into glyphs).
         const revealRows = Math.min(bh, Math.ceil(ease * bh));
 
-        const scroll = Math.floor(elapsed / 22);
-
         for (let y = 0; y < bh; y++) {
           for (let x = 0; x < bw; x++) {
             const di = (y * bw + x) * 4;
@@ -344,45 +329,11 @@
               out[di + 2] = logo.data[di + 2];
               out[di + 3] = 255;
             } else {
-              const srcY = (y - scroll + bh * 64) % bh;
-              const si = (srcY * bw + x) * 4;
-              let r = noiseBase[si];
-              let gch = noiseBase[si + 1];
-              let b = noiseBase[si + 2];
-
-              // Camouflage: seed the HELL-o pixels into the initial field,
-              // but snap them into the same red/white/black noise palette so the word
-              // is "already there" yet hard to read until the scan reveals rows.
-              const lr = logo.data[di];
-              const lg = logo.data[di + 1];
-              const lb = logo.data[di + 2];
-              const ll = 0.299 * lr + 0.587 * lg + 0.114 * lb;
-              if (ll > 70) {
-                const roll = ((x * 73856093) ^ (y * 19349663) ^ (frame * 83492791)) >>> 0;
-                const p = roll & 255;
-                if (p < 150) {
-                  r = 245;
-                  gch = 245;
-                  b = 245;
-                } else if (p < 230) {
-                  r = 255;
-                  gch = 58;
-                  b = 58;
-                } else {
-                  r = 0;
-                  gch = 0;
-                  b = 0;
-                }
-              } else if ((x + y + frame) % 11 === 0) {
-                const [nr, ng, nb] = warmNoiseAt(di, frame);
-                r = nr;
-                gch = ng;
-                b = nb;
-              }
+              const [r, gch, b, a] = warmNoiseAt(di, frame);
               out[di] = r;
               out[di + 1] = gch;
               out[di + 2] = b;
-              out[di + 3] = 255;
+              out[di + 3] = a;
             }
           }
         }
