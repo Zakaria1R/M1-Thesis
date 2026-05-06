@@ -245,23 +245,32 @@
     return img;
   }
 
+  /** Discrete TV-static palette: black, grays, white, red-orange (no animation — position only). */
+  const BOOT_SCRAMBLE_PALETTE = [
+    [0, 0, 0],
+    [34, 32, 32],
+    [110, 106, 104],
+    [175, 172, 168],
+    [228, 226, 222],
+    [255, 255, 255],
+    [255, 58, 58],
+    [255, 95, 42],
+    [220, 48, 38],
+    [180, 36, 32],
+  ];
+
   /**
-   * Deterministic red/white/black scramble per pixel (no scroll bands or vertical bias).
-   * `byteIndex` is the ImageData index (multiple of 4); `frame` retints each tick.
+   * Frozen random grid per cell (x, y). Does not use frame — avoids shimmer that reads as motion.
    */
-  function warmNoiseAt(byteIndex, frame) {
-    const h = (byteIndex * 2246822519 + frame * 3266489917 + 668265263) >>> 0;
-    const flick = (byteIndex * 13 + frame * 747796405) & 255;
-    const r0 = h & 255;
-    if (r0 < 28) return [0, 0, 0, 255];
-    if (r0 < 160) {
-      const w = 215 + Math.floor((40 * flick) / 255);
-      return [w, w, w, 255];
-    }
-    const rr = 205 + ((h >>> 8) & 50);
-    const gg = 8 + ((h >>> 16) & 24);
-    const bb = 8 + ((h >>> 24) & 24);
-    return [rr, gg, bb, 255];
+  function staticScrambleAt(x, y) {
+    let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ 1442695041;
+    h = Math.imul(h ^ (h >>> 15), 2246822519);
+    h ^= h >>> 13;
+    h = Math.imul(h, 3266489917);
+    h ^= h >>> 16;
+    h >>>= 0;
+    const c = BOOT_SCRAMBLE_PALETTE[h % BOOT_SCRAMBLE_PALETTE.length];
+    return [c[0], c[1], c[2], 255];
   }
 
   function drawLowResToCanvas(canvas, imageDataBwBh) {
@@ -283,7 +292,7 @@
 
   /**
    * Logo bitmap is drawn underneath logically: each fully revealed row is copied verbatim from
-   * the logo ImageData (no blending). Unrevealed rows = full-frame scrambled static (same
+   * the logo ImageData (no blending). Unrevealed rows = fixed per-pixel scramble (same
    * treatment over letter pixels so nothing reads as HELL-o until the scan passes).
    */
   function playScrambleBoot(canvas, durationMs = 2600) {
@@ -309,7 +318,6 @@
     if (!tctx) return Promise.resolve();
     tctx.imageSmoothingEnabled = false;
 
-    let frame = 0;
     const start = now();
 
     return new Promise((resolve) => {
@@ -329,7 +337,7 @@
               out[di + 2] = logo.data[di + 2];
               out[di + 3] = 255;
             } else {
-              const [r, gch, b, a] = warmNoiseAt(di, frame);
+              const [r, gch, b, a] = staticScrambleAt(x, y);
               out[di] = r;
               out[di + 1] = gch;
               out[di + 2] = b;
@@ -344,7 +352,6 @@
         ctx.fillRect(0, 0, w, h);
         ctx.drawImage(tmp, 0, 0, bw, bh, 0, 0, w, h);
 
-        frame++;
         if (t < 1) requestAnimationFrame(tickFrame);
         else {
           out.set(logo.data);
