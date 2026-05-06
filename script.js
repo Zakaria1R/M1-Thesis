@@ -38,8 +38,9 @@
     name: "Zakaria Rahmouni",
     thesisTitle: "HELL-o",
     rncp: "RNCP39855",
-    track: "Parcours Game Design",
+    track: "Expert Design Digital & Game Design",
     school: "ITECOM Art Design",
+    presentedHeading: "PRÉSENTÉ PAR",
     supervisorsHeading: "ENCADRÉ PAR",
     supervisors: ["SONIA BENSOULA", "DAPHNÉ LEJEUNE"],
   };
@@ -476,6 +477,7 @@
               h("div", { class: "titleArt__sub", text: "Press Enter" }),
             ]),
             h("div", { class: "titleMeta" }, [
+              h("div", { class: "titleEncadre__label", text: deckInfo.presentedHeading }),
               h("div", { class: "titleMeta__line", text: deckInfo.name }),
               h("div", {
                 class: "titleMeta__line",
