@@ -26,6 +26,7 @@
 
   const state = {
     world: 0,
+    slide: 0,
     booted: false,
     pressStartArmed: false,
     deckStartedAt: null,
@@ -109,6 +110,272 @@
     for (const child of children) el.append(child);
     return el;
   }
+
+  function worldLabel(world) {
+    return worldMeta[world]?.hud ?? `WORLD ${world}`;
+  }
+
+  function slideCount(world) {
+    return getSlidesForWorld(world).length;
+  }
+
+  function slideScreen(world, slideTitle, bodyChildren = [], options = {}) {
+    const headerClass = options.intro ? "slideHeader slideHeader--intro" : "slideHeader";
+    const panelChildren = [
+      h("header", { class: headerClass }, [
+        h("p", { class: "slideHeader__world", text: worldLabel(world) }),
+        h("h2", { class: "slideHeader__title", text: slideTitle }),
+      ]),
+    ];
+    if (bodyChildren.length > 0) {
+      panelChildren.push(h("div", { class: "slideBody" }, bodyChildren));
+    }
+    return h("div", { class: "screen" }, [h("div", { class: "panel" }, panelChildren)]);
+  }
+
+  function imageFrame(label, artText = "Placeholder image") {
+    return h("div", { class: "frame frame--tall" }, [
+      h("div", { class: "frame__label", text: label }),
+      h("div", { class: "frame__art", text: artText }),
+    ]);
+  }
+
+  function bulletList(items, className = "list") {
+    return h("ul", { class: className }, items.map((label) =>
+      h("li", {}, [h("span", { class: "bullet" }, []), h("span", { text: label })])
+    ));
+  }
+
+  function getSlidesForWorld(world) {
+    if (world === 2) return world1Slides;
+    if (world === 3) return world2Slides;
+    if (world === 4) return world3Slides;
+    if (world === 5) return world4Slides;
+    if (world === 6) return world5Slides;
+    if (world === 7) return world6Slides;
+    return [];
+  }
+
+  const world1Slides = [
+    {
+      title: "STRATÉGIE",
+      render: () => slideScreen(2, "STRATÉGIE", [], { intro: true }),
+    },
+    {
+      title: "Mon défi personnel",
+      render: () =>
+        slideScreen(2, "Mon défi personnel", [
+          h("div", { class: "mediaPair" }, [
+            imageFrame("Jeu réaliste — 2024"),
+            imageFrame("HELL-o — 2025"),
+          ]),
+          h("p", {
+            class: "mediaPair__caption",
+            text: "Du ultra-réalisme au pixel art — tester mes limites créatives.",
+          }),
+        ]),
+    },
+    {
+      title: "Analyse des références",
+      render: () =>
+        slideScreen(2, "Analyse des références", [
+          h("div", { class: "mediaPair" }, [
+            h("div", { class: "refCard" }, [
+              imageFrame("Hollow Knight"),
+              h("div", { class: "refCard__bullets" }, [
+                bulletList([
+                  "Level design & progression non-linéaire",
+                  "Tension, exploration et lisibilité des zones",
+                ]),
+              ]),
+            ]),
+            h("div", { class: "refCard" }, [
+              imageFrame("Metal Slug"),
+              h("div", { class: "refCard__bullets" }, [
+                bulletList([
+                  "Game feel, feedback visuel & rythme d'action",
+                  "Animation, impact frames & lecture du gameplay",
+                ]),
+              ]),
+            ]),
+          ]),
+        ]),
+    },
+    {
+      title: "Ce qui fait le succès d'un jeu indie solo",
+      render: () =>
+        slideScreen(2, "Ce qui fait le succès d'un jeu indie solo", [
+          h("div", { class: "heroQuoteWrap" }, [
+            h("blockquote", {
+              class: "heroQuote",
+              text: "Ce n'est pas la technique qui connecte le joueur — c'est l'âme du projet.",
+            }),
+          ]),
+          h("div", { class: "supportBullets" }, [
+            bulletList([
+              "Une intention claire portée du début à la fin",
+              "Un scope réaliste pour un développeur solo",
+              "Des boucles de gameplay lisibles et mémorables",
+            ]),
+          ]),
+        ]),
+    },
+    {
+      title: "Public cible",
+      render: () =>
+        slideScreen(2, "Public cible", [
+          h("div", { class: "grid2 grid2--media" }, [
+            imageFrame("Persona joueur"),
+            bulletList([
+              "Fans de jeux indépendants",
+              "Communauté solo dev",
+              "Joueurs qui valorisent le ressenti avant le graphisme",
+            ]),
+          ]),
+        ]),
+    },
+    {
+      title: "Pourquoi le pixel art en 2025 ?",
+      render: () =>
+        slideScreen(2, "Pourquoi le pixel art en 2025 ?", [
+          h("div", { class: "grid2 grid2--media" }, [
+            bulletList([
+              "Le pixel art comme contrainte créative volontaire",
+              "Un style qui exige maîtrise et discipline",
+              "Une esthétique qui résonne avec la communauté indie",
+            ]),
+            imageFrame("Moodboard HELL-o", "Moodboard HELL-o\n(placeholder)"),
+          ]),
+        ]),
+    },
+  ];
+
+  const world2Slides = [
+    {
+      title: "Conception",
+      render: () =>
+        slideScreen(3, "Conception", [
+          h("div", { class: "grid2" }, [
+            bulletList([
+              "Concept, intentions & promesse d'expérience",
+              "Mécaniques, boucles, règles & balance",
+              "UX flows, wireframes, prototypage",
+              "Content/Level design & progression",
+              "Documentation (GDD, specs, pipeline)",
+              "Playtests, retours & ajustements",
+            ]),
+            imageFrame("CONCEPT ART / SPRITE", "Placeholder sprite / concept sheet\n(pixelated)"),
+          ]),
+        ]),
+    },
+  ];
+
+  const world3Slides = [
+    {
+      title: "Pilotage",
+      render: () =>
+        slideScreen(4, "Pilotage", [
+          h("div", { class: "timeline" }, [
+            h("div", { class: "step" }, [
+              h("div", { class: "step__dot" }, []),
+              h("div", {}, [
+                h("div", { class: "step__title", text: "Phase 1 — Cadrage" }),
+                h("div", { class: "step__sub", text: "Scope, jalons, risques, critères d'acceptation." }),
+              ]),
+            ]),
+            h("div", { class: "step" }, [
+              h("div", { class: "step__dot" }, []),
+              h("div", {}, [
+                h("div", { class: "step__title", text: "Phase 2 — Production" }),
+                h("div", { class: "step__sub", text: "Sprints, communication, playtests, bug triage." }),
+              ]),
+            ]),
+            h("div", { class: "step" }, [
+              h("div", { class: "step__dot" }, []),
+              h("div", {}, [
+                h("div", { class: "step__title", text: "Phase 3 — Stabilisation" }),
+                h("div", { class: "step__sub", text: "Qualité, performance, polish, build & démo." }),
+              ]),
+            ]),
+            h("div", { class: "step" }, [
+              h("div", { class: "step__dot" }, []),
+              h("div", {}, [
+                h("div", { class: "step__title", text: "Phase 4 — Livraison" }),
+                h("div", { class: "step__sub", text: "Présentation, documentation finale, rétrospective." }),
+              ]),
+            ]),
+          ]),
+        ]),
+    },
+  ];
+
+  const world4Slides = [
+    {
+      title: "Game Design & Live Demo",
+      render: () =>
+        slideScreen(5, "Game Design & Live Demo", [
+          h("div", { class: "bigShot" }, [
+            h("div", {
+              text: "LARGE SCREENSHOT / VIDEO PLACEHOLDER\n(HELL-o gameplay / UE capture)",
+            }),
+          ]),
+          h("p", { class: "subtitle", text: "Live demo: Alt+Tab to Unreal, run demo, Alt+Tab back." }),
+        ]),
+    },
+  ];
+
+  const world5Slides = [
+    {
+      title: "Responsabilité & RSE",
+      render: () =>
+        slideScreen(6, "Responsabilité & RSE", [
+          h("div", { class: "iconList" }, [
+            h("div", { class: "iconRow" }, [
+              h("div", { class: "iconRow__icon", text: "♿" }),
+              h("div", { text: "Accessibilité & inclusion (UX/UI)" }),
+            ]),
+            h("div", { class: "iconRow" }, [
+              h("div", { class: "iconRow__icon", text: "⚖" }),
+              h("div", { text: "Éthique, données & responsabilité" }),
+            ]),
+            h("div", { class: "iconRow" }, [
+              h("div", { class: "iconRow__icon", text: "🌑" }),
+              h("div", { text: "Sobriété numérique (perf, taille, usage)" }),
+            ]),
+          ]),
+        ]),
+    },
+  ];
+
+  const world6Slides = [
+    {
+      title: "GAME OVER",
+      render: () =>
+        slideScreen(7, "GAME OVER", [
+          h("div", { class: "gameOver" }, [
+            h("div", { class: "scoreGrid" }, [
+              h("div", { class: "score" }, [
+                h("div", { class: "score__k", text: "RUN TIME" }),
+                h("div", { class: "score__v", text: "40:00" }),
+              ]),
+              h("div", { class: "score" }, [
+                h("div", { class: "score__k", text: "WORLDS CLEARED" }),
+                h("div", { class: "score__v", text: "6/6" }),
+              ]),
+              h("div", { class: "score" }, [
+                h("div", { class: "score__k", text: "KEY TAKEAWAYS" }),
+                h("div", { class: "score__v", text: "—" }),
+              ]),
+              h("div", { class: "score" }, [
+                h("div", { class: "score__k", text: "Q&A" }),
+                h("div", { class: "score__v", text: "READY" }),
+              ]),
+            ]),
+            h("p", { class: "subtitle", text: "Merci — questions ?" }),
+          ]),
+        ]),
+    },
+  ];
 
   function renderBootScreen() {
     app.replaceChildren(
@@ -456,7 +723,6 @@
   }
 
   function renderWorld(world) {
-    const title = worldMeta[world]?.hud ?? `WORLD ${world}`;
     setHudForWorld(world);
 
     const titleHints = h("div", { class: "hint hint--titleNav" }, [
@@ -546,179 +812,21 @@
       return;
     }
 
-    const logical = world - 1; // 1..6
+    const slides = getSlidesForWorld(world);
+    const maxSlide = Math.max(0, slides.length - 1);
+    const slideIndex = Math.min(Math.max(0, state.slide), maxSlide);
+    state.slide = slideIndex;
 
-    if (logical === 4) {
-      app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("div", { class: "panel" }, [
-            h("h2", { class: "title", text: title }),
-            h("div", { class: "bigShot" }, [
-              h("div", { text: "LARGE SCREENSHOT / VIDEO PLACEHOLDER\n(HELL-o gameplay / UE capture)" }),
-            ]),
-            h("p", { class: "subtitle", text: "Live demo: Alt+Tab to Unreal, run demo, Alt+Tab back." }),
-          ]),
-        ])
-      );
-      return;
-    }
-
-    if (logical === 6) {
-      app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("div", { class: "panel" }, [
-            h("div", { class: "gameOver" }, [
-              h("h2", { class: "gameOver__title", text: "GAME OVER" }),
-              h("div", { class: "scoreGrid" }, [
-                h("div", { class: "score" }, [
-                  h("div", { class: "score__k", text: "RUN TIME" }),
-                  h("div", { class: "score__v", text: "40:00" }),
-                ]),
-                h("div", { class: "score" }, [
-                  h("div", { class: "score__k", text: "WORLDS CLEARED" }),
-                  h("div", { class: "score__v", text: "6/6" }),
-                ]),
-                h("div", { class: "score" }, [
-                  h("div", { class: "score__k", text: "KEY TAKEAWAYS" }),
-                  h("div", { class: "score__v", text: "—" }),
-                ]),
-                h("div", { class: "score" }, [
-                  h("div", { class: "score__k", text: "Q&A" }),
-                  h("div", { class: "score__v", text: "READY" }),
-                ]),
-              ]),
-              h("p", { class: "subtitle", text: "Merci — questions ?" }),
-            ]),
-          ]),
-        ])
-      );
-      return;
-    }
-
-    const bulletList = (items) =>
-      h("ul", { class: "list" }, items.map((label) => h("li", {}, [h("span", { class: "bullet" }, []), h("span", { text: label })])));
-
-    if (logical === 1) {
-      app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("div", { class: "panel" }, [
-            h("h2", { class: "title", text: title }),
-            h("div", { class: "grid2" }, [
-              h("div", {}, [
-                bulletList([
-                  "Contexte, objectifs, public & contraintes",
-                  "Veille, références, benchmarks",
-                  "Stratégie produit (vision, scope, risques)",
-                  "Pitch, planning macro, jalons",
-                  "Itérations & décisions (preuves)",
-                ]),
-              ]),
-              h("div", { class: "frame" }, [
-                h("div", { class: "frame__label", text: "MOODBOARD / REFERENCES" }),
-                h("div", { class: "frame__art", text: "Placeholder image grid\n(art direction, refs, palette)" }),
-              ]),
-            ]),
-          ]),
-        ])
-      );
-      return;
-    }
-
-    if (logical === 2) {
-      app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("div", { class: "panel" }, [
-            h("h2", { class: "title", text: title }),
-            h("div", { class: "grid2" }, [
-              h("div", {}, [
-                bulletList([
-                  "Concept, intentions & promesse d'expérience",
-                  "Mécaniques, boucles, règles & balance",
-                  "UX flows, wireframes, prototypage",
-                  "Content/Level design & progression",
-                  "Documentation (GDD, specs, pipeline)",
-                  "Playtests, retours & ajustements",
-                ]),
-              ]),
-              h("div", { class: "frame" }, [
-                h("div", { class: "frame__label", text: "CONCEPT ART / SPRITE" }),
-                h("div", { class: "frame__art", text: "Placeholder sprite / concept sheet\n(pixelated)" }),
-              ]),
-            ]),
-          ]),
-        ])
-      );
-      return;
-    }
-
-    if (logical === 3) {
-      app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("div", { class: "panel" }, [
-            h("h2", { class: "title", text: title }),
-            h("div", { class: "timeline" }, [
-              h("div", { class: "step" }, [
-                h("div", { class: "step__dot" }, []),
-                h("div", {}, [
-                  h("div", { class: "step__title", text: "Phase 1 — Cadrage" }),
-                  h("div", { class: "step__sub", text: "Scope, jalons, risques, critères d'acceptation." }),
-                ]),
-              ]),
-              h("div", { class: "step" }, [
-                h("div", { class: "step__dot" }, []),
-                h("div", {}, [
-                  h("div", { class: "step__title", text: "Phase 2 — Production" }),
-                  h("div", { class: "step__sub", text: "Sprints, communication, playtests, bug triage." }),
-                ]),
-              ]),
-              h("div", { class: "step" }, [
-                h("div", { class: "step__dot" }, []),
-                h("div", {}, [
-                  h("div", { class: "step__title", text: "Phase 3 — Stabilisation" }),
-                  h("div", { class: "step__sub", text: "Qualité, performance, polish, build & démo." }),
-                ]),
-              ]),
-              h("div", { class: "step" }, [
-                h("div", { class: "step__dot" }, []),
-                h("div", {}, [
-                  h("div", { class: "step__title", text: "Phase 4 — Livraison" }),
-                  h("div", { class: "step__sub", text: "Présentation, documentation finale, rétrospective." }),
-                ]),
-              ]),
-            ]),
-          ]),
-        ])
-      );
-      return;
-    }
-
-    if (logical === 5) {
-      app.replaceChildren(
-        h("div", { class: "screen" }, [
-          h("div", { class: "panel" }, [
-            h("h2", { class: "title", text: title }),
-            h("div", { class: "iconList" }, [
-              h("div", { class: "iconRow" }, [
-                h("div", { class: "iconRow__icon", text: "♿" }),
-                h("div", { text: "Accessibilité & inclusion (UX/UI)" }),
-              ]),
-              h("div", { class: "iconRow" }, [
-                h("div", { class: "iconRow__icon", text: "⚖" }),
-                h("div", { text: "Éthique, données & responsabilité" }),
-              ]),
-              h("div", { class: "iconRow" }, [
-                h("div", { class: "iconRow__icon", text: "🌑" }),
-                h("div", { text: "Sobriété numérique (perf, taille, usage)" }),
-              ]),
-            ]),
-          ]),
-        ])
-      );
+    const slide = slides[slideIndex];
+    if (slide) {
+      app.replaceChildren(slide.render());
       return;
     }
 
     app.replaceChildren(
-      h("div", { class: "screen" }, [h("div", { class: "panel" }, [h("h2", { class: "title", text: title })])])
+      slideScreen(world, worldLabel(world), [
+        h("p", { class: "subtitle", text: "Contenu à venir." }),
+      ])
     );
   }
 
@@ -731,21 +839,61 @@
     window.setTimeout(() => document.body.classList.remove("is-flickering"), 520);
   }
 
-  async function goToWorld(nextWorld) {
+  async function goToWorld(nextWorld, nextSlide = 0) {
     const clamped = Math.max(WORLD_MIN, Math.min(WORLD_MAX, nextWorld));
-    if (clamped === state.world) return;
+    const slides = slideCount(clamped);
+    const targetSlide = slides > 0 ? Math.min(Math.max(0, nextSlide), slides - 1) : 0;
+    if (clamped === state.world && targetSlide === state.slide) return;
     if (state.transitionLock) return;
 
     state.transitionLock = true;
     wipeTransition();
-    // Wait for wipe to cover enough, then swap content
     await new Promise((r) => setTimeout(r, 180));
     state.world = clamped;
+    state.slide = targetSlide;
     renderWorld(state.world);
     setHudForWorld(state.world);
-    // Release after animation
     await new Promise((r) => setTimeout(r, 420));
     state.transitionLock = false;
+  }
+
+  async function goToSlide(nextSlide) {
+    const slides = slideCount(state.world);
+    if (slides === 0) return;
+    const targetSlide = Math.min(Math.max(0, nextSlide), slides - 1);
+    if (targetSlide === state.slide) return;
+    if (state.transitionLock) return;
+
+    state.transitionLock = true;
+    wipeTransition();
+    await new Promise((r) => setTimeout(r, 180));
+    state.slide = targetSlide;
+    renderWorld(state.world);
+    await new Promise((r) => setTimeout(r, 420));
+    state.transitionLock = false;
+  }
+
+  async function navigateNext() {
+    const count = slideCount(state.world);
+    if (count > 0 && state.slide < count - 1) {
+      await goToSlide(state.slide + 1);
+      return;
+    }
+    if (state.world < WORLD_MAX) {
+      await goToWorld(state.world + 1, 0);
+    }
+  }
+
+  async function navigatePrev() {
+    if (state.slide > 0) {
+      await goToSlide(state.slide - 1);
+      return;
+    }
+    if (state.world > WORLD_MIN) {
+      const prevWorld = state.world - 1;
+      const lastSlide = Math.max(0, slideCount(prevWorld) - 1);
+      await goToWorld(prevWorld, lastSlide);
+    }
   }
 
   function handleKeydown(e) {
@@ -773,12 +921,12 @@
     }
 
     if (key === "ArrowRight" || key === "Enter") {
-      void goToWorld(state.world + 1);
+      void navigateNext();
       return;
     }
 
     if (key === "ArrowLeft") {
-      void goToWorld(state.world - 1);
+      void navigatePrev();
       return;
     }
   }

@@ -184,6 +184,123 @@ video {
   letter-spacing: 0.02em;
 }
 
+.slideHeader {
+  margin: 0 0 20px 0;
+}
+
+.slideHeader__world {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  color: rgba(255, 241, 223, 0.52);
+}
+
+.slideHeader__title {
+  margin: 8px 0 0 0;
+  font-size: clamp(20px, 3.2vw, 34px);
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.85);
+}
+
+.slideHeader--intro {
+  display: grid;
+  place-content: center;
+  min-height: min(58vh, 480px);
+  text-align: center;
+}
+
+.slideHeader--intro .slideHeader__title {
+  margin-top: 12px;
+  font-size: clamp(36px, 6vw, 72px);
+  letter-spacing: 0.08em;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.9), 0 0 28px rgba(255, 58, 58, 0.28);
+}
+
+.slideBody {
+  margin-top: 4px;
+}
+
+.slideIntro {
+  display: grid;
+  place-items: center;
+  min-height: min(52vh, 420px);
+}
+
+.slideIntro__title {
+  margin: 0;
+  font-size: clamp(36px, 6vw, 72px);
+  letter-spacing: 0.08em;
+  color: var(--fg);
+  text-align: center;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.9), 0 0 28px rgba(255, 58, 58, 0.28);
+}
+
+.grid2--media {
+  margin-top: 8px;
+}
+
+.mediaPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mediaPair__caption {
+  margin-top: 14px;
+  font-size: 10px;
+  line-height: 1.7;
+  color: rgba(255, 241, 223, 0.62);
+  text-align: center;
+}
+
+.refCard__bullets {
+  margin-top: 10px;
+}
+
+.refCard__bullets .list {
+  margin-top: 0;
+  gap: 8px;
+}
+
+.refCard__bullets .list li {
+  padding: 8px 10px;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.heroQuote {
+  margin: 0;
+  padding: 28px 12px;
+  font-size: clamp(14px, 2.2vw, 22px);
+  line-height: 1.75;
+  text-align: center;
+  color: var(--fg);
+  text-shadow: 0 0 22px rgba(255, 58, 58, 0.18);
+}
+
+.heroQuoteWrap {
+  display: grid;
+  place-items: center;
+  min-height: min(38vh, 320px);
+}
+
+.supportBullets {
+  max-width: min(640px, 92%);
+  margin: 0 auto;
+}
+
+.supportBullets .list li {
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.frame--tall .frame__art {
+  min-height: 220px;
+}
+
 .subtitle {
   color: var(--dim);
   margin: 0 0 18px 0;
