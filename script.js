@@ -428,9 +428,9 @@
         ]),
     },
     {
-      title: "Moodboard — personnages, environnement & style",
+      title: "Moodboard: personnages, environnement & style",
       render: () =>
-        slideScreen(3, "Moodboard — personnages, environnement & style", [
+        slideScreen(3, "Moodboard: personnages, environnement & style", [
           h("div", { class: "mediaTriple" }, [
             imageFrame("Personnages", "w2-s2-moodboard-characters"),
             imageFrame("Environnement", "w2-s2-moodboard-environment"),
