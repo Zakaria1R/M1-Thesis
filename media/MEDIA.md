@@ -43,8 +43,11 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 | Choix Dev | LibreSprite | `w3-s2-icon-libresprite.png` | `w3-s2-icon-libresprite` |
 | Choix Dev | Photoshop | `w3-s2-icon-photoshop.png` | `w3-s2-icon-photoshop` |
 | Choix Dev | FL Studio | `w3-s2-icon-fl-studio.png` | `w3-s2-icon-fl-studio` |
+| Création des Sprites | Sprite 1 | `w3-s3-creation-sprites-1.png` | `w3-s3-creation-sprites-1` |
+| Création des Sprites | Sprite 2 | `w3-s3-creation-sprites-2.png` | `w3-s3-creation-sprites-2` |
+| Création des Sprites | Sprite 3 | `w3-s3-creation-sprites-3.png` | `w3-s3-creation-sprites-3` |
 
-Use small square PNG icons (about 48×48 px or larger; they scale down in the slide).
+Use small square PNG icons (about 48×48 px or larger; they scale down in the slide) for Choix Dev.
 
 ---
 

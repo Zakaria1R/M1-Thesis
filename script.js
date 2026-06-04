@@ -257,6 +257,18 @@
       path: "world-3/w3-s2-icon-fl-studio.png",
       alt: "FL Studio",
     },
+    "w3-s3-creation-sprites-1": {
+      path: "world-3/w3-s3-creation-sprites-1.png",
+      alt: "Création des sprites — 1",
+    },
+    "w3-s3-creation-sprites-2": {
+      path: "world-3/w3-s3-creation-sprites-2.png",
+      alt: "Création des sprites — 2",
+    },
+    "w3-s3-creation-sprites-3": {
+      path: "world-3/w3-s3-creation-sprites-3.png",
+      alt: "Création des sprites — 3",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -518,6 +530,17 @@
               ["w3-s2-icon-photoshop", "w3-s2-icon-fl-studio"],
               "Autre Logiciels: Photoshop, Fl studio"
             ),
+          ]),
+        ]),
+    },
+    {
+      title: "Création des Sprites",
+      render: () =>
+        slideScreen(4, "Création des Sprites", [
+          h("div", { class: "mediaTriple" }, [
+            imageFrame("Sprite 1", "w3-s3-creation-sprites-1"),
+            imageFrame("Sprite 2", "w3-s3-creation-sprites-2"),
+            imageFrame("Sprite 3", "w3-s3-creation-sprites-3"),
           ]),
         ]),
     },
