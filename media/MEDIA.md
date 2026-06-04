@@ -34,6 +34,20 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 
 ---
 
+## World 3 — Pilotage (`media/world-3/`)
+
+| Slide | Software | **Exact filename** | `mediaId` in code |
+|-------|----------|--------------------|-------------------|
+| Choix Dev | Unreal Engine | `w3-s2-icon-unreal-engine.png` | `w3-s2-icon-unreal-engine` |
+| Choix Dev | Blueprints (C++) | `w3-s2-icon-blueprints.png` | `w3-s2-icon-blueprints` |
+| Choix Dev | LibreSprite | `w3-s2-icon-libresprite.png` | `w3-s2-icon-libresprite` |
+| Choix Dev | Photoshop | `w3-s2-icon-photoshop.png` | `w3-s2-icon-photoshop` |
+| Choix Dev | FL Studio | `w3-s2-icon-fl-studio.png` | `w3-s2-icon-fl-studio` |
+
+Use small square PNG icons (about 48×48 px or larger; they scale down in the slide).
+
+---
+
 ## World 4 — Game Design & Live Demo (`media/world-4/`)
 
 | Slide | Label on screen | **Exact filename** | `mediaId` in code |

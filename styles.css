@@ -622,6 +622,61 @@ video {
   border-radius: 14px;
 }
 
+.devChoiceList {
+  margin-top: 10px;
+  display: grid;
+  gap: 12px;
+  max-width: min(820px, 100%);
+}
+
+.devChoiceRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 2px dashed rgba(255, 122, 47, 0.22);
+  background: rgba(0, 0, 0, 0.24);
+  border-radius: 14px;
+}
+
+.devChoiceRow__icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.devChoiceRow__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 58, 58, 0.22);
+  background: rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.devChoiceRow__icon.is-missing {
+  border-style: dashed;
+}
+
+.devChoiceRow__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.devChoiceRow__text {
+  font-size: 10px;
+  line-height: 1.7;
+  color: rgba(255, 241, 223, 0.92);
+}
+
 .iconRow__icon {
   width: 42px;
   height: 42px;

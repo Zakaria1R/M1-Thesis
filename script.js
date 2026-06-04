@@ -237,6 +237,26 @@
       path: "world-2/w2-s4-gdd-2.png",
       alt: "Game Design Document — 2",
     },
+    "w3-s2-icon-unreal-engine": {
+      path: "world-3/w3-s2-icon-unreal-engine.png",
+      alt: "Unreal Engine",
+    },
+    "w3-s2-icon-blueprints": {
+      path: "world-3/w3-s2-icon-blueprints.png",
+      alt: "Blueprints (C++)",
+    },
+    "w3-s2-icon-libresprite": {
+      path: "world-3/w3-s2-icon-libresprite.png",
+      alt: "LibreSprite",
+    },
+    "w3-s2-icon-photoshop": {
+      path: "world-3/w3-s2-icon-photoshop.png",
+      alt: "Photoshop",
+    },
+    "w3-s2-icon-fl-studio": {
+      path: "world-3/w3-s2-icon-fl-studio.png",
+      alt: "FL Studio",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -298,6 +318,37 @@
     return h("div", { class: "frame frame--tall" }, [
       h("div", { class: "frame__label", text: label }),
       art,
+    ]);
+  }
+
+  function devChoiceIcon(mediaId) {
+    const spec = MEDIA_FILES[mediaId];
+    const src = mediaUrl(mediaId);
+    const box = h("div", { class: "devChoiceRow__icon" });
+
+    if (spec && src) {
+      const img = h("img", {
+        class: "devChoiceRow__img",
+        src,
+        alt: spec.alt || "",
+        loading: "lazy",
+        decoding: "async",
+      });
+      img.addEventListener("error", () => {
+        box.classList.add("is-missing");
+        img.remove();
+      });
+      box.append(img);
+    }
+
+    return box;
+  }
+
+  function devChoiceRow(iconIds, text) {
+    const ids = Array.isArray(iconIds) ? iconIds : [iconIds];
+    return h("div", { class: "devChoiceRow" }, [
+      h("div", { class: "devChoiceRow__icons" }, ids.map((id) => devChoiceIcon(id))),
+      h("div", { class: "devChoiceRow__text", text }),
     ]);
   }
 
@@ -456,38 +507,17 @@
       render: () => slideScreen(4, "PILOTAGE", [], { intro: true }),
     },
     {
-      title: "Pilotage",
+      title: "Choix Dev",
       render: () =>
-        slideScreen(4, "Pilotage", [
-          h("div", { class: "timeline" }, [
-            h("div", { class: "step" }, [
-              h("div", { class: "step__dot" }, []),
-              h("div", {}, [
-                h("div", { class: "step__title", text: "Phase 1 — Cadrage" }),
-                h("div", { class: "step__sub", text: "Scope, jalons, risques, critères d'acceptation." }),
-              ]),
-            ]),
-            h("div", { class: "step" }, [
-              h("div", { class: "step__dot" }, []),
-              h("div", {}, [
-                h("div", { class: "step__title", text: "Phase 2 — Production" }),
-                h("div", { class: "step__sub", text: "Sprints, communication, playtests, bug triage." }),
-              ]),
-            ]),
-            h("div", { class: "step" }, [
-              h("div", { class: "step__dot" }, []),
-              h("div", {}, [
-                h("div", { class: "step__title", text: "Phase 3 — Stabilisation" }),
-                h("div", { class: "step__sub", text: "Qualité, performance, polish, build & démo." }),
-              ]),
-            ]),
-            h("div", { class: "step" }, [
-              h("div", { class: "step__dot" }, []),
-              h("div", {}, [
-                h("div", { class: "step__title", text: "Phase 4 — Livraison" }),
-                h("div", { class: "step__sub", text: "Présentation, documentation finale, rétrospective." }),
-              ]),
-            ]),
+        slideScreen(4, "Choix Dev", [
+          h("div", { class: "devChoiceList" }, [
+            devChoiceRow("w3-s2-icon-unreal-engine", "Moteur de jeu: Unreal Engine"),
+            devChoiceRow("w3-s2-icon-blueprints", "Langage de programmation: Blueprints (C++)"),
+            devChoiceRow("w3-s2-icon-libresprite", "Logiciel d'animation: LibreSprite"),
+            devChoiceRow(
+              ["w3-s2-icon-photoshop", "w3-s2-icon-fl-studio"],
+              "Autre Logiciels: Photoshop, Fl studio"
+            ),
           ]),
         ]),
     },
