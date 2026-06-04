@@ -213,14 +213,6 @@
       path: "world-1/w1-s4-hell-o.png",
       alt: "HELL-o",
     },
-    "w1-s5-persona-joueur": {
-      path: "world-1/w1-s5-persona-joueur.png",
-      alt: "Persona joueur",
-    },
-    "w1-s6-moodboard-hello": {
-      path: "world-1/w1-s6-moodboard-hello.png",
-      alt: "Moodboard HELL-o",
-    },
     "w2-s1-concept-art": {
       path: "world-2/w2-s1-concept-art.png",
       alt: "Concept art / sprite",
@@ -396,34 +388,6 @@
               "platformer 2.5D",
               "Focus sur le Gameplay",
             ]),
-          ]),
-        ]),
-    },
-    {
-      title: "Public cible",
-      render: () =>
-        slideScreen(2, "Public cible", [
-          h("div", { class: "grid2 grid2--media" }, [
-            imageFrame("Persona joueur", "w1-s5-persona-joueur"),
-            bulletList([
-              "Fans de jeux indépendants",
-              "Communauté solo dev",
-              "Joueurs qui valorisent le ressenti avant le graphisme",
-            ]),
-          ]),
-        ]),
-    },
-    {
-      title: "Pourquoi le pixel art en 2025 ?",
-      render: () =>
-        slideScreen(2, "Pourquoi le pixel art en 2025 ?", [
-          h("div", { class: "grid2 grid2--media" }, [
-            bulletList([
-              "Le pixel art comme contrainte créative volontaire",
-              "Un style qui exige maîtrise et discipline",
-              "Une esthétique qui résonne avec la communauté indie",
-            ]),
-            imageFrame("Moodboard HELL-o", "w1-s6-moodboard-hello"),
           ]),
         ]),
     },
