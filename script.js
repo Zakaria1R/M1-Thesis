@@ -217,6 +217,18 @@
       path: "world-2/w2-s1-concept-art.png",
       alt: "Concept art / sprite",
     },
+    "w2-s2-moodboard-characters": {
+      path: "world-2/w2-s2-moodboard-characters.png",
+      alt: "Moodboard — personnages",
+    },
+    "w2-s2-moodboard-environment": {
+      path: "world-2/w2-s2-moodboard-environment.png",
+      alt: "Moodboard — environnement",
+    },
+    "w2-s2-moodboard-style": {
+      path: "world-2/w2-s2-moodboard-style.png",
+      alt: "Moodboard — style",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -408,6 +420,17 @@
               "Playtests, retours & ajustements",
             ]),
             imageFrame("CONCEPT ART / SPRITE", "w2-s1-concept-art"),
+          ]),
+        ]),
+    },
+    {
+      title: "Moodboard — personnages, environnement & style",
+      render: () =>
+        slideScreen(3, "Moodboard — personnages, environnement & style", [
+          h("div", { class: "mediaTriple" }, [
+            imageFrame("Personnages", "w2-s2-moodboard-characters"),
+            imageFrame("Environnement", "w2-s2-moodboard-environment"),
+            imageFrame("Style", "w2-s2-moodboard-style"),
           ]),
         ]),
     },
