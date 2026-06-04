@@ -209,6 +209,10 @@
       path: "world-1/w1-s3-metal-slug.jpg",
       alt: "Metal Slug",
     },
+    "w1-s4-hell-o": {
+      path: "world-1/w1-s4-hell-o.png",
+      alt: "HELL-o",
+    },
     "w1-s5-persona-joueur": {
       path: "world-1/w1-s5-persona-joueur.png",
       alt: "Persona joueur",
@@ -385,7 +389,8 @@
       title: "Qu'est ce que c'est HELL-o?",
       render: () =>
         slideScreen(2, "Qu'est ce que c'est HELL-o?", [
-          h("div", { class: "supportBullets" }, [
+          h("div", { class: "grid2 grid2--media" }, [
+            imageFrame("HELL-o", "w1-s4-hell-o"),
             bulletList([
               "Un jeu pixel art.",
               "platformer 2.5D",
