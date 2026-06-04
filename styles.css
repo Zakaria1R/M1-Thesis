@@ -704,6 +704,33 @@ canvas#logoCanvas {
   }
 }
 
+.deckCounter {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 45;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 241, 223, 0.88);
+  padding: 6px 12px;
+  border: 2px solid rgba(255, 122, 47, 0.28);
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  pointer-events: none;
+  transition: opacity 180ms linear, transform 180ms steps(4, end);
+}
+
+.deckCounter.is-hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(6px);
+}
+
+.deckCounter:not(.is-hidden) {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .slideBeacon {
   position: fixed;
   top: 12px;

@@ -22,6 +22,7 @@
   const slideBeacon = document.getElementById("slideBeacon");
   const slideBeaconCode = document.getElementById("slideBeaconCode");
   const slideBeaconName = document.getElementById("slideBeaconName");
+  const deckCounter = document.getElementById("deckCounter");
 
   if (
     !app ||
@@ -34,7 +35,8 @@
     !hudKeys ||
     !slideBeacon ||
     !slideBeaconCode ||
-    !slideBeaconName
+    !slideBeaconName ||
+    !deckCounter
   ) {
     throw new Error("Missing required DOM nodes.");
   }
@@ -101,11 +103,29 @@
     return world >= 2 ? world - 1 : 0;
   }
 
-  function updateSlideBeacon() {
+  function globalSlideNumber(world, slideIndex = 0) {
+    if (world === 0) return 1;
+    if (world === 1) return 2;
+
+    let n = 2;
+    for (let w = 2; w < world; w++) {
+      n += slideCount(w);
+    }
+    const slides = slideCount(world);
+    const idx = slides > 0 ? Math.min(Math.max(0, slideIndex), slides - 1) : 0;
+    return n + idx + 1;
+  }
+
+  function updateDeckChrome() {
     if (!state.booted) {
       slideBeacon.classList.add("is-hidden");
+      deckCounter.classList.add("is-hidden");
       return;
     }
+
+    const n = globalSlideNumber(state.world, state.slide);
+    deckCounter.textContent = String(n);
+    deckCounter.classList.remove("is-hidden");
 
     const slides = getSlidesForWorld(state.world);
     if (state.world < 2 || slides.length === 0) {
@@ -834,6 +854,7 @@
     // HUD hidden during boot; timer not running.
     hud.classList.add("is-hidden");
     slideBeacon.classList.add("is-hidden");
+    deckCounter.classList.add("is-hidden");
     hudKeys.textContent = "Press Enter";
     state.pressStartArmed = false;
     if (pressRow instanceof HTMLElement) {
@@ -884,7 +905,7 @@
 
   function renderWorld(world) {
     setHudForWorld(world);
-    updateSlideBeacon();
+    updateDeckChrome();
 
     const titleHints = h("div", { class: "hint hint--titleNav" }, [
       document.createTextNode("Navigation: "),
