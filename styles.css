@@ -270,6 +270,12 @@ video {
   min-height: min(38vh, 340px);
 }
 
+.slideMediaSingle {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
 .slideMediaSingle .frame {
   max-width: min(900px, 100%);
   margin: 0 auto;
@@ -279,6 +285,50 @@ video {
   height: min(48vh, 440px);
   max-height: min(48vh, 440px);
   min-height: min(48vh, 440px);
+}
+
+/* Portrait docs/maps: frame aspect hugs the page so images fill without side gaps */
+.slideMediaSingle--doc .frame {
+  width: min(58vw, 560px);
+  max-width: 100%;
+  padding: 8px 10px;
+}
+
+.slideMediaSingle--doc .frame__art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 210 / 297;
+  max-height: min(66vh, 620px);
+  min-height: 0;
+}
+
+.mediaPair--docs {
+  gap: 18px;
+  align-items: start;
+  max-width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.mediaPair--docs .frame {
+  padding: 8px 10px;
+  min-width: 0;
+}
+
+.mediaPair--docs .frame__art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 210 / 297;
+  max-height: min(66vh, 620px);
+  min-height: 0;
+}
+
+.slideMediaSingle--doc .frame__img,
+.mediaPair--docs .frame__img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .mediaPair__caption {

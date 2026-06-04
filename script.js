@@ -433,7 +433,7 @@
       title: "Map design",
       render: () =>
         slideScreen(3, "Map design", [
-          h("div", { class: "slideMediaSingle" }, [
+          h("div", { class: "slideMediaSingle slideMediaSingle--doc" }, [
             imageFrame("Map design", "w2-s3-map-design"),
           ]),
         ]),
@@ -442,7 +442,7 @@
       title: "Game Design Document",
       render: () =>
         slideScreen(3, "Game Design Document", [
-          h("div", { class: "mediaPair" }, [
+          h("div", { class: "mediaPair mediaPair--docs" }, [
             imageFrame("GDD — 1", "w2-s4-gdd-1"),
             imageFrame("GDD — 2", "w2-s4-gdd-2"),
           ]),
