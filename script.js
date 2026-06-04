@@ -452,6 +452,10 @@
 
   const world3Slides = [
     {
+      title: "PILOTAGE",
+      render: () => slideScreen(4, "PILOTAGE", [], { intro: true }),
+    },
+    {
       title: "Pilotage",
       render: () =>
         slideScreen(4, "Pilotage", [
