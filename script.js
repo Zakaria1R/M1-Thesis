@@ -407,8 +407,8 @@
 
   const world2Slides = [
     {
-      title: "World 2 Conception",
-      render: () => slideScreen(3, "World 2 Conception", [], { intro: true }),
+      title: "CONCEPTION",
+      render: () => slideScreen(3, "CONCEPTION", [], { intro: true }),
     },
     {
       title: "Conception",
