@@ -18,6 +18,10 @@ python -m http.server 5173
 
 Then open `http://localhost:5173`.
 
+## Media (images & GIFs)
+
+Add files under `media/` using the **exact filenames** listed in [`media/MEDIA.md`](media/MEDIA.md). They are served as static assets so every visitor sees them after deploy.
+
 ## Deploy (Vercel)
 
 Import the GitHub repo in Vercel and keep:

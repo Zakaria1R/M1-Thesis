@@ -119,6 +119,54 @@
     return getSlidesForWorld(world).length;
   }
 
+  /** Public static assets — paths relative to site root (works on Vercel / GitHub Pages). */
+  const MEDIA_BASE = "./media";
+
+  /**
+   * Registry of media slots. Copy files into media/ using the exact `path` filename.
+   * See media/MEDIA.md for the full list.
+   */
+  const MEDIA_FILES = {
+    "w1-s2-jeu-realiste-2024": {
+      path: "world-1/w1-s2-jeu-realiste-2024.png",
+      alt: "Jeu réaliste — 2024",
+    },
+    "w1-s2-hello-2025": {
+      path: "world-1/w1-s2-hello-2025.png",
+      alt: "HELL-o — 2025",
+    },
+    "w1-s3-hollow-knight": {
+      path: "world-1/w1-s3-hollow-knight.png",
+      alt: "Hollow Knight",
+    },
+    "w1-s3-metal-slug": {
+      path: "world-1/w1-s3-metal-slug.png",
+      alt: "Metal Slug",
+    },
+    "w1-s5-persona-joueur": {
+      path: "world-1/w1-s5-persona-joueur.png",
+      alt: "Persona joueur",
+    },
+    "w1-s6-moodboard-hello": {
+      path: "world-1/w1-s6-moodboard-hello.png",
+      alt: "Moodboard HELL-o",
+    },
+    "w2-s1-concept-art": {
+      path: "world-2/w2-s1-concept-art.png",
+      alt: "Concept art / sprite",
+    },
+    "w4-s1-gameplay-demo": {
+      path: "world-4/w4-s1-gameplay-demo.gif",
+      alt: "HELL-o gameplay demo",
+    },
+  };
+
+  function mediaUrl(mediaId) {
+    const spec = MEDIA_FILES[mediaId];
+    if (!spec) return null;
+    return `${MEDIA_BASE}/${spec.path}`;
+  }
+
   function slideScreen(world, slideTitle, bodyChildren = [], options = {}) {
     const headerClass = options.intro ? "slideHeader slideHeader--intro" : "slideHeader";
     const panelChildren = [
@@ -133,11 +181,77 @@
     return h("div", { class: "screen" }, [h("div", { class: "panel" }, panelChildren)]);
   }
 
-  function imageFrame(label, artText = "Placeholder image") {
+  function imageFrame(label, mediaId, placeholderText) {
+    const spec = mediaId ? MEDIA_FILES[mediaId] : null;
+    const src = mediaUrl(mediaId);
+    const art = h("div", { class: "frame__art" });
+
+    if (spec && src) {
+      const hint = h("div", { class: "frame__missing" }, [
+        document.createTextNode("Missing file — add to "),
+        h("code", { text: `media/${spec.path}` }),
+      ]);
+      const img = h("img", {
+        class: "frame__img",
+        src,
+        alt: spec.alt || label,
+        loading: "lazy",
+        decoding: "async",
+      });
+      img.addEventListener("error", () => {
+        art.classList.add("is-missing");
+        img.remove();
+        if (!art.querySelector(".frame__missing")) art.append(hint);
+      });
+      img.addEventListener("load", () => {
+        art.classList.remove("is-missing");
+        const missing = art.querySelector(".frame__missing");
+        if (missing) missing.remove();
+      });
+      art.append(img);
+    } else {
+      art.textContent = placeholderText || "Placeholder image";
+    }
+
     return h("div", { class: "frame frame--tall" }, [
       h("div", { class: "frame__label", text: label }),
-      h("div", { class: "frame__art", text: artText }),
+      art,
     ]);
+  }
+
+  function bigShotMedia(mediaId, placeholderText) {
+    const spec = mediaId ? MEDIA_FILES[mediaId] : null;
+    const src = mediaUrl(mediaId);
+    const box = h("div", { class: "bigShot" });
+
+    if (spec && src) {
+      const hint = h("div", { class: "bigShot__missing" }, [
+        document.createTextNode("Missing file — add to "),
+        h("code", { text: `media/${spec.path}` }),
+      ]);
+      const img = h("img", {
+        class: "bigShot__img",
+        src,
+        alt: spec.alt || "Media",
+        loading: "lazy",
+        decoding: "async",
+      });
+      img.addEventListener("error", () => {
+        box.classList.add("is-missing");
+        img.remove();
+        if (!box.querySelector(".bigShot__missing")) box.append(hint);
+      });
+      img.addEventListener("load", () => {
+        box.classList.remove("is-missing");
+        const missing = box.querySelector(".bigShot__missing");
+        if (missing) missing.remove();
+      });
+      box.append(img);
+    } else {
+      box.textContent = placeholderText || "Media placeholder";
+    }
+
+    return box;
   }
 
   function bulletList(items, className = "list") {
@@ -166,8 +280,8 @@
       render: () =>
         slideScreen(2, "Mon défi personnel", [
           h("div", { class: "mediaPair" }, [
-            imageFrame("Jeu réaliste — 2024"),
-            imageFrame("HELL-o — 2025"),
+            imageFrame("Jeu réaliste — 2024", "w1-s2-jeu-realiste-2024"),
+            imageFrame("HELL-o — 2025", "w1-s2-hello-2025"),
           ]),
           h("p", {
             class: "mediaPair__caption",
@@ -181,7 +295,7 @@
         slideScreen(2, "Analyse des références", [
           h("div", { class: "mediaPair" }, [
             h("div", { class: "refCard" }, [
-              imageFrame("Hollow Knight"),
+              imageFrame("Hollow Knight", "w1-s3-hollow-knight"),
               h("div", { class: "refCard__bullets" }, [
                 bulletList([
                   "Level design & progression non-linéaire",
@@ -190,7 +304,7 @@
               ]),
             ]),
             h("div", { class: "refCard" }, [
-              imageFrame("Metal Slug"),
+              imageFrame("Metal Slug", "w1-s3-metal-slug"),
               h("div", { class: "refCard__bullets" }, [
                 bulletList([
                   "Game feel, feedback visuel & rythme d'action",
@@ -225,7 +339,7 @@
       render: () =>
         slideScreen(2, "Public cible", [
           h("div", { class: "grid2 grid2--media" }, [
-            imageFrame("Persona joueur"),
+            imageFrame("Persona joueur", "w1-s5-persona-joueur"),
             bulletList([
               "Fans de jeux indépendants",
               "Communauté solo dev",
@@ -244,7 +358,7 @@
               "Un style qui exige maîtrise et discipline",
               "Une esthétique qui résonne avec la communauté indie",
             ]),
-            imageFrame("Moodboard HELL-o", "Moodboard HELL-o\n(placeholder)"),
+            imageFrame("Moodboard HELL-o", "w1-s6-moodboard-hello"),
           ]),
         ]),
     },
@@ -264,7 +378,7 @@
               "Documentation (GDD, specs, pipeline)",
               "Playtests, retours & ajustements",
             ]),
-            imageFrame("CONCEPT ART / SPRITE", "Placeholder sprite / concept sheet\n(pixelated)"),
+            imageFrame("CONCEPT ART / SPRITE", "w2-s1-concept-art"),
           ]),
         ]),
     },
@@ -314,11 +428,10 @@
       title: "Game Design & Live Demo",
       render: () =>
         slideScreen(5, "Game Design & Live Demo", [
-          h("div", { class: "bigShot" }, [
-            h("div", {
-              text: "LARGE SCREENSHOT / VIDEO PLACEHOLDER\n(HELL-o gameplay / UE capture)",
-            }),
-          ]),
+          bigShotMedia(
+            "w4-s1-gameplay-demo",
+            "LARGE SCREENSHOT / VIDEO PLACEHOLDER\n(HELL-o gameplay / UE capture)"
+          ),
           h("p", { class: "subtitle", text: "Live demo: Alt+Tab to Unreal, run demo, Alt+Tab back." }),
         ]),
     },

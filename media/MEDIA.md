@@ -1,0 +1,49 @@
+# Media files — exact names for the deck
+
+Drop your images and GIFs into the folders below using **exactly** these filenames (case-sensitive).  
+The site loads them from `./media/…` so they work for every visitor once deployed.
+
+Supported formats: `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif` — use the extension listed for each slot.
+
+When you add a new slot later, ask in chat and you will get a new row here and a matching `mediaId` in `script.js`.
+
+---
+
+## World 1 — Stratégie (`media/world-1/`)
+
+| Slide | Label on screen | **Exact filename** | `mediaId` in code |
+|-------|-----------------|--------------------|-------------------|
+| Mon défi personnel | Jeu réaliste — 2024 | `w1-s2-jeu-realiste-2024.png` | `w1-s2-jeu-realiste-2024` |
+| Mon défi personnel | HELL-o — 2025 | `w1-s2-hello-2025.png` | `w1-s2-hello-2025` |
+| Analyse des références | Hollow Knight | `w1-s3-hollow-knight.png` | `w1-s3-hollow-knight` |
+| Analyse des références | Metal Slug | `w1-s3-metal-slug.png` | `w1-s3-metal-slug` |
+| Public cible | Persona joueur | `w1-s5-persona-joueur.png` | `w1-s5-persona-joueur` |
+| Pourquoi le pixel art en 2025 ? | Moodboard HELL-o | `w1-s6-moodboard-hello.png` | `w1-s6-moodboard-hello` |
+
+---
+
+## World 2 — Conception (`media/world-2/`)
+
+| Slide | Label on screen | **Exact filename** | `mediaId` in code |
+|-------|-----------------|--------------------|-------------------|
+| Conception | CONCEPT ART / SPRITE | `w2-s1-concept-art.png` | `w2-s1-concept-art` |
+
+---
+
+## World 4 — Game Design & Live Demo (`media/world-4/`)
+
+| Slide | Label on screen | **Exact filename** | `mediaId` in code |
+|-------|-----------------|--------------------|-------------------|
+| Game Design & Live Demo | Gameplay / demo | `w4-s1-gameplay-demo.gif` | `w4-s1-gameplay-demo` |
+
+Use `.gif` for animation; you can switch to `.png` or `.webp` if you change the `path` in `MEDIA_FILES` in `script.js`.
+
+---
+
+## Adding more media later
+
+1. Tell which slide and whether it is an **image** or **GIF**.
+2. You will receive: folder path, **exact filename**, and `mediaId`.
+3. Copy the file into that folder and refresh the site.
+
+Naming pattern: `w{world}-s{slide}-{short-description}.{ext}` (lowercase, hyphens, no accents).

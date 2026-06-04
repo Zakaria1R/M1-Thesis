@@ -404,6 +404,7 @@ video {
 
 .frame__art {
   height: calc(100% - 22px);
+  min-height: 180px;
   border-radius: 10px;
   border: 2px dashed rgba(255, 58, 58, 0.22);
   display: grid;
@@ -412,6 +413,32 @@ video {
   font-size: 10px;
   line-height: 1.7;
   text-align: center;
+  overflow: hidden;
+  position: relative;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.frame__img {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.frame__missing {
+  padding: 12px;
+  font-size: 9px;
+  line-height: 1.65;
+  color: rgba(255, 241, 223, 0.55);
+}
+
+.frame__missing code {
+  font-family: inherit;
+  font-size: 8px;
+  color: rgba(255, 181, 97, 0.95);
+  word-break: break-all;
 }
 
 .timeline {
@@ -463,6 +490,29 @@ video {
   text-align: center;
   font-size: 10px;
   line-height: 1.8;
+  overflow: hidden;
+  position: relative;
+}
+
+.bigShot__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.bigShot__missing {
+  padding: 16px;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.bigShot__missing code {
+  font-family: inherit;
+  font-size: 8px;
+  color: rgba(255, 181, 97, 0.95);
+  word-break: break-all;
 }
 
 .iconList {
