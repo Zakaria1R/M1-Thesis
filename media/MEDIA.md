@@ -28,6 +28,9 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 | Moodboard | Personnages | `w2-s2-moodboard-characters.png` | `w2-s2-moodboard-characters` |
 | Moodboard | Environnement | `w2-s2-moodboard-environment.jpg` | `w2-s2-moodboard-environment` |
 | Moodboard | Style | `w2-s2-moodboard-style.png` | `w2-s2-moodboard-style` |
+| Map design | Map design | `w2-s3-map-design.png` | `w2-s3-map-design` |
+| Game Design Document | GDD — 1 | `w2-s4-gdd-1.png` | `w2-s4-gdd-1` |
+| Game Design Document | GDD — 2 | `w2-s4-gdd-2.png` | `w2-s4-gdd-2` |
 
 ---
 

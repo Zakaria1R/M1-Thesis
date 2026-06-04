@@ -225,6 +225,18 @@
       path: "world-2/w2-s2-moodboard-style.png",
       alt: "Moodboard — style",
     },
+    "w2-s3-map-design": {
+      path: "world-2/w2-s3-map-design.png",
+      alt: "Map design",
+    },
+    "w2-s4-gdd-1": {
+      path: "world-2/w2-s4-gdd-1.png",
+      alt: "Game Design Document — 1",
+    },
+    "w2-s4-gdd-2": {
+      path: "world-2/w2-s4-gdd-2.png",
+      alt: "Game Design Document — 2",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -414,6 +426,25 @@
             imageFrame("Personnages", "w2-s2-moodboard-characters"),
             imageFrame("Environnement", "w2-s2-moodboard-environment"),
             imageFrame("Style", "w2-s2-moodboard-style"),
+          ]),
+        ]),
+    },
+    {
+      title: "Map design",
+      render: () =>
+        slideScreen(3, "Map design", [
+          h("div", { class: "slideMediaSingle" }, [
+            imageFrame("Map design", "w2-s3-map-design"),
+          ]),
+        ]),
+    },
+    {
+      title: "Game Design Document",
+      render: () =>
+        slideScreen(3, "Game Design Document", [
+          h("div", { class: "mediaPair" }, [
+            imageFrame("GDD — 1", "w2-s4-gdd-1"),
+            imageFrame("GDD — 2", "w2-s4-gdd-2"),
           ]),
         ]),
     },

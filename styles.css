@@ -270,6 +270,17 @@ video {
   min-height: min(38vh, 340px);
 }
 
+.slideMediaSingle .frame {
+  max-width: min(900px, 100%);
+  margin: 0 auto;
+}
+
+.slideMediaSingle .frame__art {
+  height: min(48vh, 440px);
+  max-height: min(48vh, 440px);
+  min-height: min(48vh, 440px);
+}
+
 .mediaPair__caption {
   margin-top: 14px;
   font-size: 10px;
