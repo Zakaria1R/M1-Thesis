@@ -27,7 +27,7 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 |-------|-----------------|--------------------|-------------------|
 | Conception | CONCEPT ART / SPRITE | `w2-s1-concept-art.png` | `w2-s1-concept-art` |
 | Moodboard | Personnages | `w2-s2-moodboard-characters.png` | `w2-s2-moodboard-characters` |
-| Moodboard | Environnement | `w2-s2-moodboard-environment.png` | `w2-s2-moodboard-environment` |
+| Moodboard | Environnement | `w2-s2-moodboard-environment.jpg` | `w2-s2-moodboard-environment` |
 | Moodboard | Style | `w2-s2-moodboard-style.png` | `w2-s2-moodboard-style` |
 
 ---

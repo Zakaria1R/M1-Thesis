@@ -222,7 +222,7 @@
       alt: "Moodboard — personnages",
     },
     "w2-s2-moodboard-environment": {
-      path: "world-2/w2-s2-moodboard-environment.png",
+      path: "world-2/w2-s2-moodboard-environment.jpg",
       alt: "Moodboard — environnement",
     },
     "w2-s2-moodboard-style": {
