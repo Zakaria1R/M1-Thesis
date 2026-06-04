@@ -347,8 +347,8 @@
   function devChoiceRow(iconIds, text) {
     const ids = Array.isArray(iconIds) ? iconIds : [iconIds];
     return h("div", { class: "devChoiceRow" }, [
-      h("div", { class: "devChoiceRow__icons" }, ids.map((id) => devChoiceIcon(id))),
       h("div", { class: "devChoiceRow__text", text }),
+      h("div", { class: "devChoiceRow__icons" }, ids.map((id) => devChoiceIcon(id))),
     ]);
   }
 
