@@ -298,8 +298,8 @@
               imageFrame("Hollow Knight", "w1-s3-hollow-knight"),
               h("div", { class: "refCard__bullets" }, [
                 bulletList([
-                  "Level design & progression non-linéaire",
-                  "Tension, exploration et lisibilité des zones",
+                  "Level design",
+                  "Progression non linénaire",
                 ]),
               ]),
             ]),
@@ -307,8 +307,8 @@
               imageFrame("Metal Slug", "w1-s3-metal-slug"),
               h("div", { class: "refCard__bullets" }, [
                 bulletList([
-                  "Game feel, feedback visuel & rythme d'action",
-                  "Animation, impact frames & lecture du gameplay",
+                  "Game feel & feedback visuel",
+                  "Style d'animation et impact frame",
                 ]),
               ]),
             ]),
