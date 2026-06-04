@@ -15,8 +15,8 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 |-------|-----------------|--------------------|-------------------|
 | Mon défi personnel | Jeu réaliste — 2024 | `w1-s2-jeu-realiste-2024.png` | `w1-s2-jeu-realiste-2024` |
 | Mon défi personnel | HELL-o — 2025 | `w1-s2-hello-2025.png` | `w1-s2-hello-2025` |
-| Analyse des références | Hollow Knight | `w1-s3-hollow-knight.png` | `w1-s3-hollow-knight` |
-| Analyse des références | Metal Slug | `w1-s3-metal-slug.png` | `w1-s3-metal-slug` |
+| Analyse des références | Hollow Knight | `w1-s3-hollow-knight.jpg` | `w1-s3-hollow-knight` |
+| Analyse des références | Metal Slug | `w1-s3-metal-slug.jpg` | `w1-s3-metal-slug` |
 | Public cible | Persona joueur | `w1-s5-persona-joueur.png` | `w1-s5-persona-joueur` |
 | Pourquoi le pixel art en 2025 ? | Moodboard HELL-o | `w1-s6-moodboard-hello.png` | `w1-s6-moodboard-hello` |
 

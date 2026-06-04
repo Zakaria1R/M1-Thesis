@@ -136,11 +136,11 @@
       alt: "HELL-o — 2025",
     },
     "w1-s3-hollow-knight": {
-      path: "world-1/w1-s3-hollow-knight.png",
+      path: "world-1/w1-s3-hollow-knight.jpg",
       alt: "Hollow Knight",
     },
     "w1-s3-metal-slug": {
-      path: "world-1/w1-s3-metal-slug.png",
+      path: "world-1/w1-s3-metal-slug.jpg",
       alt: "Metal Slug",
     },
     "w1-s5-persona-joueur": {
@@ -285,7 +285,7 @@
           ]),
           h("p", {
             class: "mediaPair__caption",
-            text: "Du ultra-réalisme au pixel art — tester mes limites créatives.",
+            text: "Du ultra-réalisme au pixel art, tester mes limites créatives.",
           }),
         ]),
     },
