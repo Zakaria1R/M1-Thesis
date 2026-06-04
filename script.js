@@ -433,7 +433,7 @@
       title: "Map design",
       render: () =>
         slideScreen(3, "Map design", [
-          h("div", { class: "slideMediaSingle slideMediaSingle--doc" }, [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Map design", "w2-s3-map-design"),
           ]),
         ]),
