@@ -252,6 +252,22 @@ video {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+  align-items: stretch;
+}
+
+.mediaTriple .frame {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mediaTriple .frame__art {
+  flex: 0 0 auto;
+  height: min(38vh, 340px);
+  max-height: min(38vh, 340px);
+  min-height: min(38vh, 340px);
 }
 
 .mediaPair__caption {
@@ -304,7 +320,9 @@ video {
 }
 
 .frame--tall .frame__art {
-  min-height: 220px;
+  height: min(40vh, 360px);
+  max-height: min(40vh, 360px);
+  min-height: 200px;
 }
 
 .subtitle {
@@ -409,12 +427,14 @@ video {
 }
 
 .frame__art {
-  height: calc(100% - 22px);
+  height: min(32vh, 280px);
+  max-height: min(32vh, 280px);
   min-height: 180px;
   border-radius: 10px;
   border: 2px dashed rgba(255, 58, 58, 0.22);
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: rgba(255, 241, 223, 0.55);
   font-size: 10px;
   line-height: 1.7;
@@ -422,15 +442,17 @@ video {
   overflow: hidden;
   position: relative;
   background: rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
 }
 
 .frame__img {
-  width: 100%;
-  height: 100%;
+  display: block;
+  max-width: 100%;
   max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   object-position: center;
-  display: block;
 }
 
 .frame__missing {
