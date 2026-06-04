@@ -19,8 +19,23 @@
   const hudTime = document.getElementById("hudTime");
   const hudBarFill = document.getElementById("hudBarFill");
   const hudKeys = document.getElementById("hudKeys");
+  const slideBeacon = document.getElementById("slideBeacon");
+  const slideBeaconCode = document.getElementById("slideBeaconCode");
+  const slideBeaconName = document.getElementById("slideBeaconName");
 
-  if (!app || !wipe || !power || !hud || !hudBloc || !hudTime || !hudBarFill || !hudKeys) {
+  if (
+    !app ||
+    !wipe ||
+    !power ||
+    !hud ||
+    !hudBloc ||
+    !hudTime ||
+    !hudBarFill ||
+    !hudKeys ||
+    !slideBeacon ||
+    !slideBeaconCode ||
+    !slideBeaconName
+  ) {
     throw new Error("Missing required DOM nodes.");
   }
 
@@ -79,6 +94,37 @@
   function setHudForWorld(world) {
     const meta = worldMeta[world] || { bloc: "—" };
     hudBloc.textContent = meta.bloc;
+  }
+
+  /** Worlds 2..7 map to presentation Worlds 1..6. */
+  function presentationWorldNum(world) {
+    return world >= 2 ? world - 1 : 0;
+  }
+
+  function updateSlideBeacon() {
+    if (!state.booted) {
+      slideBeacon.classList.add("is-hidden");
+      return;
+    }
+
+    const slides = getSlidesForWorld(state.world);
+    if (state.world < 2 || slides.length === 0) {
+      slideBeacon.classList.add("is-hidden");
+      return;
+    }
+
+    const slideIndex = Math.min(Math.max(0, state.slide), slides.length - 1);
+    const slide = slides[slideIndex];
+    if (!slide) {
+      slideBeacon.classList.add("is-hidden");
+      return;
+    }
+
+    const w = presentationWorldNum(state.world);
+    const s = slideIndex + 1;
+    slideBeaconCode.textContent = `w${w}.${s}`;
+    slideBeaconName.textContent = slide.title;
+    slideBeacon.classList.remove("is-hidden");
   }
 
   function startDeckTimerIfNeeded() {
@@ -787,6 +833,7 @@
 
     // HUD hidden during boot; timer not running.
     hud.classList.add("is-hidden");
+    slideBeacon.classList.add("is-hidden");
     hudKeys.textContent = "Press Enter";
     state.pressStartArmed = false;
     if (pressRow instanceof HTMLElement) {
@@ -837,6 +884,7 @@
 
   function renderWorld(world) {
     setHudForWorld(world);
+    updateSlideBeacon();
 
     const titleHints = h("div", { class: "hint hint--titleNav" }, [
       document.createTextNode("Navigation: "),
