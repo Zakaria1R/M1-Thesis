@@ -213,10 +213,6 @@
       path: "world-1/w1-s4-hell-o.png",
       alt: "HELL-o",
     },
-    "w2-s1-concept-art": {
-      path: "world-2/w2-s1-concept-art.png",
-      alt: "Concept art / sprite",
-    },
     "w2-s2-moodboard-characters": {
       path: "world-2/w2-s2-moodboard-characters.png",
       alt: "Moodboard — personnages",
@@ -409,23 +405,6 @@
     {
       title: "CONCEPTION",
       render: () => slideScreen(3, "CONCEPTION", [], { intro: true }),
-    },
-    {
-      title: "Conception",
-      render: () =>
-        slideScreen(3, "Conception", [
-          h("div", { class: "grid2" }, [
-            bulletList([
-              "Concept, intentions & promesse d'expérience",
-              "Mécaniques, boucles, règles & balance",
-              "UX flows, wireframes, prototypage",
-              "Content/Level design & progression",
-              "Documentation (GDD, specs, pipeline)",
-              "Playtests, retours & ajustements",
-            ]),
-            imageFrame("CONCEPT ART / SPRITE", "w2-s1-concept-art"),
-          ]),
-        ]),
     },
     {
       title: "Moodboard: personnages, environnement & style",
