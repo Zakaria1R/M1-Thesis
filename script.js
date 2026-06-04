@@ -382,20 +382,14 @@
         ]),
     },
     {
-      title: "Ce qui fait le succès d'un jeu indie solo",
+      title: "Qu'est ce que c'est HELL-o?",
       render: () =>
-        slideScreen(2, "Ce qui fait le succès d'un jeu indie solo", [
-          h("div", { class: "heroQuoteWrap" }, [
-            h("blockquote", {
-              class: "heroQuote",
-              text: "Ce n'est pas la technique qui connecte le joueur — c'est l'âme du projet.",
-            }),
-          ]),
+        slideScreen(2, "Qu'est ce que c'est HELL-o?", [
           h("div", { class: "supportBullets" }, [
             bulletList([
-              "Une intention claire portée du début à la fin",
-              "Un scope réaliste pour un développeur solo",
-              "Des boucles de gameplay lisibles et mémorables",
+              "Un jeu pixel art.",
+              "platformer 2.5D",
+              "Focus sur le Gameplay",
             ]),
           ]),
         ]),
