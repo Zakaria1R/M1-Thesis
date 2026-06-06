@@ -269,6 +269,10 @@
       path: "world-3/w3-s3-creation-sprites-3.png",
       alt: "Création des sprites — 3",
     },
+    "w3-s4-integration-organization": {
+      path: "world-3/w3-s4-integration-organization.png",
+      alt: "Integration & Organization",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -541,6 +545,15 @@
             imageFrame("Sprite 1", "w3-s3-creation-sprites-1"),
             imageFrame("Sprite 2", "w3-s3-creation-sprites-2"),
             imageFrame("Sprite 3", "w3-s3-creation-sprites-3"),
+          ]),
+        ]),
+    },
+    {
+      title: "Integration & Organization",
+      render: () =>
+        slideScreen(4, "Integration & Organization", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Integration & Organization", "w3-s4-integration-organization"),
           ]),
         ]),
     },
