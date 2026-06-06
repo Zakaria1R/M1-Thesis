@@ -109,11 +109,12 @@ body.is-flickering .pixelCursor {
   transition: opacity 240ms linear, transform 240ms steps(6, end);
 }
 
-img,
-canvas,
-video {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+/* Smooth scaling for photos & screenshots on slides */
+.frame__img,
+.bigShot img,
+.bigShot video,
+.devChoiceRow__img {
+  image-rendering: auto;
 }
 
 .noscript {
