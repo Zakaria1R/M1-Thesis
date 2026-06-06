@@ -241,6 +241,10 @@
       path: "world-3/w3-s7-programmation-blueprint-part-1.png",
       alt: "Programmation Blueprint — Part 1",
     },
+    "w3-s8-programmation-blueprint-part-2": {
+      path: "world-3/w3-s8-programmation-blueprint-part-2.png",
+      alt: "Programmation Blueprint — Part 2",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -549,6 +553,15 @@
         slideScreen(4, "Programmation Blueprint — Part 1", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Programmation Blueprint — Part 1", "w3-s7-programmation-blueprint-part-1"),
+          ]),
+        ]),
+    },
+    {
+      title: "Programmation Blueprint — Part 2",
+      render: () =>
+        slideScreen(4, "Programmation Blueprint — Part 2", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Programmation Blueprint — Part 2", "w3-s8-programmation-blueprint-part-2"),
           ]),
         ]),
     },

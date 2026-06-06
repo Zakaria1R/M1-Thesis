@@ -50,6 +50,7 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 | Création d'environnement | Création d'environnement | `w3-s5-creation-environnement.png` | `w3-s5-creation-environnement` |
 | Création des Personnages | Création des Personnages | `w3-s6-creation-personnages.png` | `w3-s6-creation-personnages` |
 | Programmation Blueprint — Part 1 | Programmation Blueprint — Part 1 | `w3-s7-programmation-blueprint-part-1.png` | `w3-s7-programmation-blueprint-part-1` |
+| Programmation Blueprint — Part 2 | Programmation Blueprint — Part 2 | `w3-s8-programmation-blueprint-part-2.png` | `w3-s8-programmation-blueprint-part-2` |
 
 Use small square PNG icons (about 48×48 px or larger; they scale down in the slide) for Choix Dev.
 
