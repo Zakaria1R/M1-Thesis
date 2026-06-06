@@ -233,6 +233,10 @@
       path: "world-3/w3-s5-creation-environnement.png",
       alt: "Création d'environnement",
     },
+    "w3-s6-creation-personnages": {
+      path: "world-3/w3-s6-creation-personnages.png",
+      alt: "Création des Personnages",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -523,6 +527,15 @@
         slideScreen(4, "Création d'environnement", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Création d'environnement", "w3-s5-creation-environnement"),
+          ]),
+        ]),
+    },
+    {
+      title: "Création des Personnages",
+      render: () =>
+        slideScreen(4, "Création des Personnages", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Création des Personnages", "w3-s6-creation-personnages"),
           ]),
         ]),
     },
