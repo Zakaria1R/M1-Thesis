@@ -1160,8 +1160,6 @@
     );
 
     renderBootScreen();
-    setHudForWorld(0);
-    tick();
     window.addEventListener("keydown", handleKeydown, { passive: false });
   }
 

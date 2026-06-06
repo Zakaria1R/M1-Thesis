@@ -951,58 +951,15 @@ canvas#logoCanvas {
   transition: opacity 180ms linear, transform 180ms steps(4, end);
 }
 
-.hud__top {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  align-items: baseline;
-  flex-wrap: wrap;
-}
-
-.hud__bloc,
-.hud__keys,
-.hud__time {
+.hud__keys {
   font-size: 8px;
   line-height: 1.35;
-  color: rgba(255, 241, 223, 0.92);
-}
-
-.hud__bloc {
-  min-width: 0;
-  flex: 1 1 auto;
-  word-break: break-word;
-}
-
-.hud__keys {
   color: rgba(255, 241, 223, 0.96);
   border: 2px solid rgba(255, 122, 47, 0.3);
   padding: 3px 6px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.35);
-  flex-shrink: 0;
-}
-
-.hud__bar {
-  height: 6px;
-  margin-top: 6px;
-  border-radius: 999px;
-  background: rgba(232, 243, 255, 0.12);
-  border: 2px solid rgba(232, 243, 255, 0.18);
-  overflow: hidden;
-}
-
-.hud__barFill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255, 58, 58, 0.95), rgba(255, 122, 47, 0.75));
-  filter: saturate(1.2);
-  transform-origin: left center;
-}
-
-.hud__time {
-  margin-top: 5px;
-  font-size: 7px;
-  color: rgba(232, 243, 255, 0.75);
+  background: rgba(0, 0, 0, 0.55);
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.4));
 }
 
 .crt {
