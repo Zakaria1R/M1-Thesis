@@ -229,6 +229,10 @@
       path: "world-3/w3-s4-integration-organization.png",
       alt: "Integration & Organization",
     },
+    "w3-s5-creation-environnement": {
+      path: "world-3/w3-s5-creation-environnement.png",
+      alt: "Création d'environnement",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -510,6 +514,15 @@
         slideScreen(4, "Integration & Organization", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Integration & Organization", "w3-s4-integration-organization"),
+          ]),
+        ]),
+    },
+    {
+      title: "Création d'environnement",
+      render: () =>
+        slideScreen(4, "Création d'environnement", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Création d'environnement", "w3-s5-creation-environnement"),
           ]),
         ]),
     },

@@ -47,6 +47,7 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 | Création des Sprites | Sprite 2 | `w3-s3-creation-sprites-2.png` | `w3-s3-creation-sprites-2` |
 | Création des Sprites | Sprite 3 | `w3-s3-creation-sprites-3.png` | `w3-s3-creation-sprites-3` |
 | Integration & Organization | Integration & Organization | `w3-s4-integration-organization.png` | `w3-s4-integration-organization` |
+| Création d'environnement | Création d'environnement | `w3-s5-creation-environnement.png` | `w3-s5-creation-environnement` |
 
 Use small square PNG icons (about 48×48 px or larger; they scale down in the slide) for Choix Dev.
 
