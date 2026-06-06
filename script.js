@@ -237,6 +237,10 @@
       path: "world-3/w3-s6-creation-personnages.png",
       alt: "Création des Personnages",
     },
+    "w3-s7-programmation-blueprint-part-1": {
+      path: "world-3/w3-s7-programmation-blueprint-part-1.png",
+      alt: "Programmation Blueprint — Part 1",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -536,6 +540,15 @@
         slideScreen(4, "Création des Personnages", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Création des Personnages", "w3-s6-creation-personnages"),
+          ]),
+        ]),
+    },
+    {
+      title: "Programmation Blueprint — Part 1",
+      render: () =>
+        slideScreen(4, "Programmation Blueprint — Part 1", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Programmation Blueprint — Part 1", "w3-s7-programmation-blueprint-part-1"),
           ]),
         ]),
     },
