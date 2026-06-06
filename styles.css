@@ -288,11 +288,21 @@ body.is-flickering .pixelCursor {
   min-height: min(48vh, 440px);
 }
 
-/* Doc/map frames: aspect hugs image shape (must beat .frame--tall below) */
+/* Doc/map frames: image sets height (must beat .frame--tall below) */
 .slideMediaSingle--map .frame {
   width: min(92vw, 1100px);
   max-width: 100%;
   padding: 8px 10px;
+  min-height: 0;
+}
+
+/* Title already in slide header — avoid stealing vertical space */
+.slideMediaSingle--map .frame__label {
+  display: none;
+}
+
+.panel:has(.slideMediaSingle--map) .slideHeader {
+  margin-bottom: 12px;
 }
 
 .mediaPair--docs {
@@ -366,9 +376,9 @@ body.is-flickering .pixelCursor {
 .slideMediaSingle--map .frame.frame--tall .frame__art {
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 10;
-  max-height: min(62vh, 580px);
   min-height: 0;
+  max-height: none;
+  overflow: visible;
 }
 
 .mediaPair--docs .frame.frame--tall .frame__art {
@@ -379,7 +389,17 @@ body.is-flickering .pixelCursor {
   min-height: 0;
 }
 
-.slideMediaSingle--map .frame.frame--tall .frame__img,
+.slideMediaSingle--map .frame.frame--tall .frame__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(calc(80vh - 220px), 540px);
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+}
+
 .mediaPair--docs .frame.frame--tall .frame__img {
   width: 100%;
   height: 100%;
