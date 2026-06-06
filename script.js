@@ -2,8 +2,6 @@
 (() => {
   "use strict";
 
-  const TOTAL_MINUTES = 40;
-  const TOTAL_MS = TOTAL_MINUTES * 60 * 1000;
   const WORLD_MIN = 0;
   // Worlds:
   // 0 Title
@@ -15,9 +13,6 @@
   const wipe = document.getElementById("wipe");
   const power = document.getElementById("power");
   const hud = document.getElementById("hud");
-  const hudBloc = document.getElementById("hudBloc");
-  const hudTime = document.getElementById("hudTime");
-  const hudBarFill = document.getElementById("hudBarFill");
   const hudKeys = document.getElementById("hudKeys");
   const slideBeacon = document.getElementById("slideBeacon");
   const slideBeaconCode = document.getElementById("slideBeaconCode");
@@ -29,9 +24,6 @@
     !wipe ||
     !power ||
     !hud ||
-    !hudBloc ||
-    !hudTime ||
-    !hudBarFill ||
     !hudKeys ||
     !slideBeacon ||
     !slideBeaconCode ||
@@ -46,7 +38,6 @@
     slide: 0,
     booted: false,
     pressStartArmed: false,
-    deckStartedAt: null,
     transitionLock: false,
     bootLogoLoopRunning: false,
     bootLogoRafId: 0,
@@ -77,25 +68,8 @@
     7: { hud: "WORLD 6 — BILAN / GAME OVER", bloc: "FIN — MERCI" },
   };
 
-  function pad2(n) {
-    return String(n).padStart(2, "0");
-  }
-
-  function formatClock(ms) {
-    const clamped = Math.max(0, ms);
-    const totalSeconds = Math.floor(clamped / 1000);
-    const m = Math.floor(totalSeconds / 60);
-    const s = totalSeconds % 60;
-    return `${pad2(m)}:${pad2(s)}`;
-  }
-
   function now() {
     return performance.now();
-  }
-
-  function setHudForWorld(world) {
-    const meta = worldMeta[world] || { bloc: "—" };
-    hudBloc.textContent = meta.bloc;
   }
 
   /** Worlds 2..7 map to presentation Worlds 1..6. */
@@ -145,24 +119,6 @@
     slideBeaconCode.textContent = `w${w}.${s}`;
     slideBeaconName.textContent = slide.title;
     slideBeacon.classList.remove("is-hidden");
-  }
-
-  function startDeckTimerIfNeeded() {
-    if (state.deckStartedAt != null) return;
-    state.deckStartedAt = Date.now();
-  }
-
-  function updateHudTime() {
-    const startedAt = state.deckStartedAt;
-    const elapsed = startedAt == null ? 0 : Date.now() - startedAt;
-    const ratio = Math.min(1, Math.max(0, elapsed / TOTAL_MS));
-    hudBarFill.style.width = `${(ratio * 100).toFixed(2)}%`;
-    hudTime.textContent = `${formatClock(elapsed)} / ${pad2(TOTAL_MINUTES)}:00`;
-  }
-
-  function tick() {
-    updateHudTime();
-    requestAnimationFrame(tick);
   }
 
   function h(tag, attrs = {}, children = []) {
@@ -974,7 +930,6 @@
   }
 
   function renderWorld(world) {
-    setHudForWorld(world);
     updateDeckChrome();
 
     const titleHints = h("div", { class: "hint hint--titleNav" }, [
@@ -1104,7 +1059,6 @@
     state.world = clamped;
     state.slide = targetSlide;
     renderWorld(state.world);
-    setHudForWorld(state.world);
     await new Promise((r) => setTimeout(r, 420));
     state.transitionLock = false;
   }
@@ -1160,13 +1114,11 @@
       if (key === "Enter" && state.pressStartArmed) {
         stopBootLogoLoop();
         state.booted = true;
-        startDeckTimerIfNeeded();
         hud.classList.remove("is-hidden");
         hudKeys.textContent = "← → / Enter";
         wipeTransition();
         setTimeout(() => {
           renderWorld(0);
-          setHudForWorld(0);
         }, 180);
       }
       return;
