@@ -806,9 +806,28 @@ body.is-flickering .pixelCursor {
   font-size: 14px;
 }
 
+.panel:has(.gameOver) {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel:has(.gameOver) .slideBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+}
+
 .gameOver {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(28px, 5vh, 56px);
   text-align: center;
-  padding-top: 10px;
+  padding-top: 0;
 }
 
 .gameOver__title {
@@ -819,30 +838,40 @@ body.is-flickering .pixelCursor {
   text-shadow: 0 4px 0 rgba(0, 0, 0, 0.9), 0 0 28px rgba(255, 58, 58, 0.35);
 }
 
+.gameOver__thanks {
+  margin: 0;
+  font-size: clamp(20px, 3.4vw, 36px);
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: rgba(255, 241, 223, 0.95);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.85);
+}
+
 .scoreGrid {
-  margin-top: 22px;
+  width: min(820px, 92%);
+  margin-top: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  text-align: left;
+  gap: clamp(16px, 2.8vw, 32px);
+  text-align: center;
 }
 
 .score {
-  padding: 12px 12px;
+  padding: clamp(24px, 4.5vh, 44px) clamp(20px, 3vw, 32px);
   border: 2px solid rgba(255, 122, 47, 0.2);
   background: rgba(0, 0, 0, 0.24);
   border-radius: 14px;
 }
 
 .score__k {
-  font-size: 10px;
+  font-size: clamp(10px, 1.3vw, 14px);
   color: rgba(255, 241, 223, 0.7);
   letter-spacing: 0.14em;
 }
 
 .score__v {
-  margin-top: 8px;
-  font-size: 16px;
+  margin-top: clamp(10px, 1.6vh, 16px);
+  font-size: clamp(24px, 4.5vw, 48px);
   color: rgba(255, 241, 223, 0.95);
 }
 

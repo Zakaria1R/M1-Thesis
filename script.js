@@ -721,23 +721,15 @@
           h("div", { class: "gameOver" }, [
             h("div", { class: "scoreGrid" }, [
               h("div", { class: "score" }, [
-                h("div", { class: "score__k", text: "RUN TIME" }),
-                h("div", { class: "score__v", text: "40:00" }),
-              ]),
-              h("div", { class: "score" }, [
                 h("div", { class: "score__k", text: "WORLDS CLEARED" }),
                 h("div", { class: "score__v", text: "6/6" }),
-              ]),
-              h("div", { class: "score" }, [
-                h("div", { class: "score__k", text: "KEY TAKEAWAYS" }),
-                h("div", { class: "score__v", text: "—" }),
               ]),
               h("div", { class: "score" }, [
                 h("div", { class: "score__k", text: "Q&A" }),
                 h("div", { class: "score__v", text: "READY" }),
               ]),
             ]),
-            h("p", { class: "subtitle", text: "Merci — questions ?" }),
+            h("p", { class: "gameOver__thanks", text: "Merci pour votre attention" }),
           ]),
         ]),
     },
