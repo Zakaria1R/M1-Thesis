@@ -700,7 +700,7 @@
       title: "Marketing",
       render: () =>
         slideScreen(6, "Marketing", [
-          h("div", { class: "supportBullets" }, [
+          h("div", { class: "marketingBullets" }, [
             bulletList([
               "itch.io",
               "Reddit",
