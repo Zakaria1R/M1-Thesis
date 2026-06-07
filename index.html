@@ -13,7 +13,7 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="./styles.css?v=4e3267d-r30" />
+    <link rel="stylesheet" href="./styles.css?v=121dce9-r31" />
   </head>
   <body>
     <noscript>
@@ -33,6 +33,21 @@
       <span class="slideBeacon__name" id="slideBeaconName"></span>
     </div>
 
+    <nav class="slideIndex is-hidden" id="slideIndex" aria-label="Slide index">
+      <button
+        type="button"
+        class="slideIndex__toggle"
+        id="slideIndexToggle"
+        aria-expanded="false"
+        aria-controls="slideIndexPanel"
+      >
+        INDEX
+      </button>
+      <div class="slideIndex__panel" id="slideIndexPanel" hidden>
+        <div class="slideIndex__list" id="slideIndexList"></div>
+      </div>
+    </nav>
+
     <div class="hud is-hidden" id="hud" aria-hidden="true">
       <div class="hud__keys" id="hudKeys">← → / Enter</div>
     </div>
@@ -44,7 +59,7 @@
       <div class="wipe" id="wipe"></div>
     </div>
 
-    <script src="./script.js?v=4e3267d-r30" defer></script>
+    <script src="./script.js?v=121dce9-r31" defer></script>
   </body>
 </html>
 

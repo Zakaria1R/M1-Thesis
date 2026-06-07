@@ -18,6 +18,10 @@
   const slideBeaconCode = document.getElementById("slideBeaconCode");
   const slideBeaconName = document.getElementById("slideBeaconName");
   const deckCounter = document.getElementById("deckCounter");
+  const slideIndex = document.getElementById("slideIndex");
+  const slideIndexToggle = document.getElementById("slideIndexToggle");
+  const slideIndexPanel = document.getElementById("slideIndexPanel");
+  const slideIndexList = document.getElementById("slideIndexList");
 
   if (
     !app ||
@@ -28,10 +32,17 @@
     !slideBeacon ||
     !slideBeaconCode ||
     !slideBeaconName ||
-    !deckCounter
+    !deckCounter ||
+    !slideIndex ||
+    !slideIndexToggle ||
+    !slideIndexPanel ||
+    !slideIndexList
   ) {
     throw new Error("Missing required DOM nodes.");
   }
+
+  let slideIndexBuilt = false;
+  let slideIndexOpen = false;
 
   const state = {
     world: 0,
@@ -90,10 +101,115 @@
     return n + idx + 1;
   }
 
+  function getSlideIndexEntries() {
+    const entries = [
+      { world: 0, slide: 0, group: "TITLE", code: "—", label: deckInfo.thesisTitle },
+      { world: 1, slide: 0, group: "LEVEL SELECT", code: "—", label: "Level Select" },
+    ];
+
+    for (let world = 2; world <= WORLD_MAX; world++) {
+      const slides = getSlidesForWorld(world);
+      const w = presentationWorldNum(world);
+      const group = worldMeta[world]?.hud ?? `WORLD ${w}`;
+      slides.forEach((slide, i) => {
+        entries.push({
+          world,
+          slide: i,
+          group,
+          code: `w${w}.${i + 1}`,
+          label: slide.title,
+        });
+      });
+    }
+
+    return entries;
+  }
+
+  function buildSlideIndex() {
+    if (slideIndexBuilt) return;
+
+    const entries = getSlideIndexEntries();
+    let lastGroup = "";
+    const frag = document.createDocumentFragment();
+
+    for (const entry of entries) {
+      if (entry.group !== lastGroup) {
+        lastGroup = entry.group;
+        frag.append(h("div", { class: "slideIndex__group", text: entry.group }));
+      }
+
+      frag.append(
+        h(
+          "button",
+          {
+            type: "button",
+            class: "slideIndex__item",
+            "data-world": String(entry.world),
+            "data-slide": String(entry.slide),
+            onclick: () => {
+              void jumpToIndexEntry(entry);
+            },
+          },
+          [
+            h("span", { class: "slideIndex__code", text: entry.code }),
+            h("span", { class: "slideIndex__label", text: entry.label }),
+          ]
+        )
+      );
+    }
+
+    slideIndexList.replaceChildren(frag);
+    slideIndexBuilt = true;
+  }
+
+  function updateSlideIndexActive() {
+    if (!slideIndexBuilt) return;
+
+    slideIndexList.querySelectorAll(".slideIndex__item").forEach((btn) => {
+      const w = Number(btn.getAttribute("data-world"));
+      const s = Number(btn.getAttribute("data-slide"));
+      const active = w === state.world && s === state.slide;
+      btn.classList.toggle("is-active", active);
+      if (active) btn.setAttribute("aria-current", "location");
+      else btn.removeAttribute("aria-current");
+    });
+  }
+
+  function setSlideIndexOpen(open) {
+    slideIndexOpen = open;
+    slideIndexPanel.hidden = !open;
+    slideIndexToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    slideIndex.classList.toggle("is-open", open);
+
+    if (open) {
+      const active = slideIndexList.querySelector(".slideIndex__item.is-active");
+      if (active) active.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function updateSlideIndexVisibility() {
+    if (!state.booted) {
+      slideIndex.classList.add("is-hidden");
+      setSlideIndexOpen(false);
+      return;
+    }
+
+    slideIndex.classList.remove("is-hidden");
+    buildSlideIndex();
+    updateSlideIndexActive();
+  }
+
+  async function jumpToIndexEntry(entry) {
+    setSlideIndexOpen(false);
+    if (entry.world === state.world && entry.slide === state.slide) return;
+    await goToWorld(entry.world, entry.slide);
+  }
+
   function updateDeckChrome() {
     if (!state.booted) {
       slideBeacon.classList.add("is-hidden");
       deckCounter.classList.add("is-hidden");
+      updateSlideIndexVisibility();
       return;
     }
 
@@ -104,6 +220,7 @@
     const slides = getSlidesForWorld(state.world);
     if (state.world < 2 || slides.length === 0) {
       slideBeacon.classList.add("is-hidden");
+      updateSlideIndexVisibility();
       return;
     }
 
@@ -111,6 +228,7 @@
     const slide = slides[slideIndex];
     if (!slide) {
       slideBeacon.classList.add("is-hidden");
+      updateSlideIndexVisibility();
       return;
     }
 
@@ -119,6 +237,7 @@
     slideBeaconCode.textContent = `w${w}.${s}`;
     slideBeaconName.textContent = slide.title;
     slideBeacon.classList.remove("is-hidden");
+    updateSlideIndexVisibility();
   }
 
   function h(tag, attrs = {}, children = []) {
@@ -1277,6 +1396,11 @@
       return;
     }
 
+    if (key === "Escape" && slideIndexOpen) {
+      setSlideIndexOpen(false);
+      return;
+    }
+
     if (key === "ArrowRight" || key === "Enter") {
       void navigateNext();
       return;
@@ -1311,6 +1435,17 @@
       },
       { passive: true }
     );
+
+    slideIndexToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setSlideIndexOpen(!slideIndexOpen);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!slideIndexOpen) return;
+      if (e.target instanceof Node && slideIndex.contains(e.target)) return;
+      setSlideIndexOpen(false);
+    });
 
     renderBootScreen();
     window.addEventListener("keydown", handleKeydown, { passive: false });
