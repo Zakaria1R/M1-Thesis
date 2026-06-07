@@ -696,6 +696,21 @@
           ]),
         ]),
     },
+    {
+      title: "Marketing",
+      render: () =>
+        slideScreen(6, "Marketing", [
+          h("div", { class: "supportBullets" }, [
+            bulletList([
+              "itch.io",
+              "Reddit",
+              "Tiktok / Instagram",
+              "Streamers / Youtubers",
+              "Merch",
+            ]),
+          ]),
+        ]),
+    },
   ];
 
   const world6Slides = [

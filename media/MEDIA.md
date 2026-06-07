@@ -76,6 +76,7 @@ Use small square PNG icons (about 48×48 px or larger; they scale down in the sl
 | Slide | Label on screen | **Exact filename** | `mediaId` in code |
 |-------|-----------------|--------------------|-------------------|
 | Retroplanning | Retroplanning | `w5-s2-retroplanning.png` | `w5-s2-retroplanning` |
+| Marketing | Marketing | — (bullet list, no image) | — |
 
 ---
 
