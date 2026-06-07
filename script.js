@@ -277,6 +277,10 @@
       path: "world-4/w4-s2-choix-synths-creation-melodies.png",
       alt: "Choix des Synths et Création des Mélodies",
     },
+    "w4-s3-effet-pixelisation": {
+      path: "world-4/w4-s3-effet-pixelisation.png",
+      alt: "Effet de pixelisation",
+    },
   };
 
   function mediaUrl(mediaId) {
@@ -660,6 +664,15 @@
         slideScreen(5, "Choix des Synths et Création des Mélodies", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Choix des Synths et Création des Mélodies", "w4-s2-choix-synths-creation-melodies"),
+          ]),
+        ]),
+    },
+    {
+      title: "Effet de pixelisation",
+      render: () =>
+        slideScreen(5, "Effet de pixelisation", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Effet de pixelisation", "w4-s3-effet-pixelisation"),
           ]),
         ]),
     },

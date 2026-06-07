@@ -67,6 +67,7 @@ Use small square PNG icons (about 48×48 px or larger; they scale down in the sl
 | Slide | Label on screen | **Exact filename** | `mediaId` in code |
 |-------|-----------------|--------------------|-------------------|
 | Choix des Synths et Création des Mélodies | Choix des Synths et Création des Mélodies | `w4-s2-choix-synths-creation-melodies.png` | `w4-s2-choix-synths-creation-melodies` |
+| Effet de pixelisation | Effet de pixelisation | `w4-s3-effet-pixelisation.png` | `w4-s3-effet-pixelisation` |
 
 ---
 
