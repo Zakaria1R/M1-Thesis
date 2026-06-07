@@ -281,6 +281,10 @@
       path: "world-4/w4-s3-effet-pixelisation.png",
       alt: "Effet de pixelisation",
     },
+    "w5-s2-retroplanning": {
+      path: "world-5/w5-s2-retroplanning.png",
+      alt: "Retroplanning",
+    },
   };
 
   function mediaUrl(mediaId) {
@@ -684,22 +688,11 @@
       render: () => slideScreen(6, "RETROPLANNING ET MARKETING", [], { intro: true }),
     },
     {
-      title: "Responsabilité & RSE",
+      title: "Retroplanning",
       render: () =>
-        slideScreen(6, "Responsabilité & RSE", [
-          h("div", { class: "iconList" }, [
-            h("div", { class: "iconRow" }, [
-              h("div", { class: "iconRow__icon", text: "♿" }),
-              h("div", { text: "Accessibilité & inclusion (UX/UI)" }),
-            ]),
-            h("div", { class: "iconRow" }, [
-              h("div", { class: "iconRow__icon", text: "⚖" }),
-              h("div", { text: "Éthique, données & responsabilité" }),
-            ]),
-            h("div", { class: "iconRow" }, [
-              h("div", { class: "iconRow__icon", text: "🌑" }),
-              h("div", { text: "Sobriété numérique (perf, taille, usage)" }),
-            ]),
+        slideScreen(6, "Retroplanning", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Retroplanning", "w5-s2-retroplanning"),
           ]),
         ]),
     },
