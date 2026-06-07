@@ -253,6 +253,14 @@
       path: "world-3/w3-s10-programmation-blueprint-part-4.png",
       alt: "Programmation Blueprint — Système des dégâts — Part 2",
     },
+    "w3-s11-defis-navigation-part-1-1": {
+      path: "world-3/w3-s11-defis-navigation-part-1-1.png",
+      alt: "Défis — Navigation inter-niveau — Part 1 (1)",
+    },
+    "w3-s11-defis-navigation-part-1-2": {
+      path: "world-3/w3-s11-defis-navigation-part-1-2.png",
+      alt: "Défis — Navigation inter-niveau — Part 1 (2)",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -588,6 +596,16 @@
         slideScreen(4, "Programmation Blueprint — Système des dégâts — Part 2", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Programmation Blueprint — Système des dégâts — Part 2", "w3-s10-programmation-blueprint-part-4"),
+          ]),
+        ]),
+    },
+    {
+      title: "Programmation — Défis (Navigation inter-niveau) — Part 1",
+      render: () =>
+        slideScreen(4, "Programmation — Défis (Navigation inter-niveau) — Part 1", [
+          h("div", { class: "mediaStack" }, [
+            imageFrame("Image 1", "w3-s11-defis-navigation-part-1-1"),
+            imageFrame("Image 2", "w3-s11-defis-navigation-part-1-2"),
           ]),
         ]),
     },

@@ -271,6 +271,47 @@ body.is-flickering .pixelCursor {
   min-height: min(38vh, 340px);
 }
 
+.mediaStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  width: min(92vw, 1100px);
+  margin: 0 auto;
+}
+
+.mediaStack .frame {
+  width: 100%;
+  min-height: 0;
+  padding: 6px 8px;
+}
+
+.mediaStack .frame__label {
+  display: none;
+}
+
+.panel:has(.mediaStack) .slideHeader {
+  margin-bottom: 12px;
+}
+
+.mediaStack .frame__art {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+.mediaStack .frame__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(34vh, 250px);
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+}
+
 .slideMediaSingle {
   display: flex;
   justify-content: center;
