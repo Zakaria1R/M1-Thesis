@@ -53,8 +53,8 @@ When you add a new slot later, ask in chat and you will get a new row here and a
 | Programmation Blueprint — Système de locomotion — Part 2 | Programmation Blueprint — Système de locomotion — Part 2 | `w3-s8-programmation-blueprint-part-2.png` | `w3-s8-programmation-blueprint-part-2` |
 | Programmation Blueprint — Système des dégâts — Part 1 | Programmation Blueprint — Système des dégâts — Part 1 | `w3-s9-programmation-blueprint-part-3.png` | `w3-s9-programmation-blueprint-part-3` |
 | Programmation Blueprint — Système des dégâts — Part 2 | Programmation Blueprint — Système des dégâts — Part 2 | `w3-s10-programmation-blueprint-part-4.png` | `w3-s10-programmation-blueprint-part-4` |
-| Programmation — Défis (Navigation inter-niveau) — Part 1 | Image 1 (top) | `w3-s11-defis-navigation-part-1-1.png` | `w3-s11-defis-navigation-part-1-1` |
-| Programmation — Défis (Navigation inter-niveau) — Part 1 | Image 2 (bottom) | `w3-s11-defis-navigation-part-1-2.png` | `w3-s11-defis-navigation-part-1-2` |
+| Programmation — Défis (Navigation inter-niveau) — Part 1 | Part 1 | `w3-s11-defis-navigation-part-1-1.png` | `w3-s11-defis-navigation-part-1-1` |
+| Programmation — Défis (Navigation inter-niveau) — Part 2 | Part 2 | `w3-s12-defis-navigation-part-2-1.png` | `w3-s12-defis-navigation-part-2-1` |
 
 Use small square PNG icons (about 48×48 px or larger; they scale down in the slide) for Choix Dev.
 

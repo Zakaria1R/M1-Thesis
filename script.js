@@ -255,11 +255,11 @@
     },
     "w3-s11-defis-navigation-part-1-1": {
       path: "world-3/w3-s11-defis-navigation-part-1-1.png",
-      alt: "Défis — Navigation inter-niveau — Part 1 (1)",
+      alt: "Programmation — Défis (Navigation inter-niveau) — Part 1",
     },
-    "w3-s11-defis-navigation-part-1-2": {
-      path: "world-3/w3-s11-defis-navigation-part-1-2.png",
-      alt: "Défis — Navigation inter-niveau — Part 1 (2)",
+    "w3-s12-defis-navigation-part-2-1": {
+      path: "world-3/w3-s12-defis-navigation-part-2-1.png",
+      alt: "Programmation — Défis (Navigation inter-niveau) — Part 2",
     },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
@@ -603,9 +603,17 @@
       title: "Programmation — Défis (Navigation inter-niveau) — Part 1",
       render: () =>
         slideScreen(4, "Programmation — Défis (Navigation inter-niveau) — Part 1", [
-          h("div", { class: "mediaStack" }, [
-            imageFrame("Image 1", "w3-s11-defis-navigation-part-1-1"),
-            imageFrame("Image 2", "w3-s11-defis-navigation-part-1-2"),
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Programmation — Défis (Navigation inter-niveau) — Part 1", "w3-s11-defis-navigation-part-1-1"),
+          ]),
+        ]),
+    },
+    {
+      title: "Programmation — Défis (Navigation inter-niveau) — Part 2",
+      render: () =>
+        slideScreen(4, "Programmation — Défis (Navigation inter-niveau) — Part 2", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Programmation — Défis (Navigation inter-niveau) — Part 2", "w3-s12-defis-navigation-part-2-1"),
           ]),
         ]),
     },
