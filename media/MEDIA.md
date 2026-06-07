@@ -66,9 +66,7 @@ Use small square PNG icons (about 48×48 px or larger; they scale down in the sl
 
 | Slide | Label on screen | **Exact filename** | `mediaId` in code |
 |-------|-----------------|--------------------|-------------------|
-| Game Design & Live Demo | Gameplay / demo | `w4-s1-gameplay-demo.gif` | `w4-s1-gameplay-demo` |
-
-Use `.gif` for animation; you can switch to `.png` or `.webp` if you change the `path` in `MEDIA_FILES` in `script.js`.
+| Choix des Synths et Création des Mélodies | Choix des Synths et Création des Mélodies | `w4-s2-choix-synths-creation-melodies.png` | `w4-s2-choix-synths-creation-melodies` |
 
 ---
 

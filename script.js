@@ -273,6 +273,10 @@
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
     },
+    "w4-s2-choix-synths-creation-melodies": {
+      path: "world-4/w4-s2-choix-synths-creation-melodies.png",
+      alt: "Choix des Synths et Création des Mélodies",
+    },
   };
 
   function mediaUrl(mediaId) {
@@ -651,14 +655,12 @@
       render: () => slideScreen(5, "UNIVERS SONORE", [], { intro: true }),
     },
     {
-      title: "Game Design & Live Demo",
+      title: "Choix des Synths et Création des Mélodies",
       render: () =>
-        slideScreen(5, "Game Design & Live Demo", [
-          bigShotMedia(
-            "w4-s1-gameplay-demo",
-            "LARGE SCREENSHOT / VIDEO PLACEHOLDER\n(HELL-o gameplay / UE capture)"
-          ),
-          h("p", { class: "subtitle", text: "Live demo: Alt+Tab to Unreal, run demo, Alt+Tab back." }),
+        slideScreen(5, "Choix des Synths et Création des Mélodies", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Choix des Synths et Création des Mélodies", "w4-s2-choix-synths-creation-melodies"),
+          ]),
         ]),
     },
   ];
