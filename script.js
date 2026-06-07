@@ -261,6 +261,10 @@
       path: "world-3/w3-s12-defis-navigation-part-2-1.png",
       alt: "Programmation — Défis (Navigation inter-niveau) — Part 2",
     },
+    "w3-s13-defis-navigation-part-3-1": {
+      path: "world-3/w3-s13-defis-navigation-part-3-1.png",
+      alt: "Programmation — Défis (Navigation inter-niveau) — Part 3",
+    },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
       alt: "HELL-o gameplay demo",
@@ -614,6 +618,15 @@
         slideScreen(4, "Programmation — Défis (Navigation inter-niveau) — Part 2", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
             imageFrame("Programmation — Défis (Navigation inter-niveau) — Part 2", "w3-s12-defis-navigation-part-2-1"),
+          ]),
+        ]),
+    },
+    {
+      title: "Programmation — Défis (Navigation inter-niveau) — Part 3",
+      render: () =>
+        slideScreen(4, "Programmation — Défis (Navigation inter-niveau) — Part 3", [
+          h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
+            imageFrame("Programmation — Défis (Navigation inter-niveau) — Part 3", "w3-s13-defis-navigation-part-3-1"),
           ]),
         ]),
     },
