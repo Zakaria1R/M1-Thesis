@@ -64,7 +64,7 @@
     3: { hud: "WORLD 2 — CONCEPTION", bloc: "BLOC 2 — C2.1 → C2.6" },
     4: { hud: "WORLD 3 — PILOTAGE", bloc: "BLOC 3 — C3.1 → C3.4" },
     5: { hud: "WORLD 4 — UNIVERS SONORE", bloc: "BLOC 4 — UNIVERS SONORE" },
-    6: { hud: "WORLD 5 — RESPONSABILITÉ & RSE", bloc: "TRANSVERSAL — RSE" },
+    6: { hud: "WORLD 5 — RETROPLANNING ET MARKETING", bloc: "BLOC 5 — RETROPLANNING ET MARKETING" },
     7: { hud: "WORLD 6 — BILAN / GAME OVER", bloc: "FIN — MERCI" },
   };
 
@@ -680,6 +680,10 @@
 
   const world5Slides = [
     {
+      title: "RETROPLANNING ET MARKETING",
+      render: () => slideScreen(6, "RETROPLANNING ET MARKETING", [], { intro: true }),
+    },
+    {
       title: "Responsabilité & RSE",
       render: () =>
         slideScreen(6, "Responsabilité & RSE", [
@@ -1126,7 +1130,7 @@
         ["WORLD 2", "Conception"],
         ["WORLD 3", "Pilotage"],
         ["WORLD 4", "Univers Sonore"],
-        ["WORLD 5", "Responsabilité & RSE"],
+        ["WORLD 5", "Retroplanning et Marketing"],
         ["WORLD 6", "Bilan / Game Over"],
       ];
       const cards = levels.map(([n, t], i) => {
