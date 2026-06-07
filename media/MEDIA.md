@@ -62,7 +62,7 @@ Use small square PNG icons (about 48×48 px or larger; they scale down in the sl
 
 ---
 
-## World 4 — Game Design & Live Demo (`media/world-4/`)
+## World 4 — Univers Sonore (`media/world-4/`)
 
 | Slide | Label on screen | **Exact filename** | `mediaId` in code |
 |-------|-----------------|--------------------|-------------------|

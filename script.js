@@ -63,7 +63,7 @@
     2: { hud: "WORLD 1 — STRATÉGIE", bloc: "BLOC 1 — C1.1 → C1.5" },
     3: { hud: "WORLD 2 — CONCEPTION", bloc: "BLOC 2 — C2.1 → C2.6" },
     4: { hud: "WORLD 3 — PILOTAGE", bloc: "BLOC 3 — C3.1 → C3.4" },
-    5: { hud: "WORLD 4 — GAME DESIGN & LIVE DEMO", bloc: "BLOC 4 — LIVE DEMO" },
+    5: { hud: "WORLD 4 — UNIVERS SONORE", bloc: "BLOC 4 — UNIVERS SONORE" },
     6: { hud: "WORLD 5 — RESPONSABILITÉ & RSE", bloc: "TRANSVERSAL — RSE" },
     7: { hud: "WORLD 6 — BILAN / GAME OVER", bloc: "FIN — MERCI" },
   };
@@ -647,6 +647,10 @@
 
   const world4Slides = [
     {
+      title: "UNIVERS SONORE",
+      render: () => slideScreen(5, "UNIVERS SONORE", [], { intro: true }),
+    },
+    {
       title: "Game Design & Live Demo",
       render: () =>
         slideScreen(5, "Game Design & Live Demo", [
@@ -1106,7 +1110,7 @@
         ["WORLD 1", "Stratégie"],
         ["WORLD 2", "Conception"],
         ["WORLD 3", "Pilotage"],
-        ["WORLD 4", "Game Design & Live Demo"],
+        ["WORLD 4", "Univers Sonore"],
         ["WORLD 5", "Responsabilité & RSE"],
         ["WORLD 6", "Bilan / Game Over"],
       ];
