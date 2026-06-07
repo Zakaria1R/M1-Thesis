@@ -247,11 +247,11 @@
     },
     "w3-s9-programmation-blueprint-part-3": {
       path: "world-3/w3-s9-programmation-blueprint-part-3.png",
-      alt: "Programmation Blueprint — Système des dégâts — Part 3",
+      alt: "Programmation Blueprint — Système des dégâts — Part 1",
     },
     "w3-s10-programmation-blueprint-part-4": {
       path: "world-3/w3-s10-programmation-blueprint-part-4.png",
-      alt: "Programmation Blueprint — Système des dégâts — Part 4",
+      alt: "Programmation Blueprint — Système des dégâts — Part 2",
     },
     "w4-s1-gameplay-demo": {
       path: "world-4/w4-s1-gameplay-demo.gif",
@@ -574,20 +574,20 @@
         ]),
     },
     {
-      title: "Programmation Blueprint — Système des dégâts — Part 3",
+      title: "Programmation Blueprint — Système des dégâts — Part 1",
       render: () =>
-        slideScreen(4, "Programmation Blueprint — Système des dégâts — Part 3", [
+        slideScreen(4, "Programmation Blueprint — Système des dégâts — Part 1", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
-            imageFrame("Programmation Blueprint — Système des dégâts — Part 3", "w3-s9-programmation-blueprint-part-3"),
+            imageFrame("Programmation Blueprint — Système des dégâts — Part 1", "w3-s9-programmation-blueprint-part-3"),
           ]),
         ]),
     },
     {
-      title: "Programmation Blueprint — Système des dégâts — Part 4",
+      title: "Programmation Blueprint — Système des dégâts — Part 2",
       render: () =>
-        slideScreen(4, "Programmation Blueprint — Système des dégâts — Part 4", [
+        slideScreen(4, "Programmation Blueprint — Système des dégâts — Part 2", [
           h("div", { class: "slideMediaSingle slideMediaSingle--map" }, [
-            imageFrame("Programmation Blueprint — Système des dégâts — Part 4", "w3-s10-programmation-blueprint-part-4"),
+            imageFrame("Programmation Blueprint — Système des dégâts — Part 2", "w3-s10-programmation-blueprint-part-4"),
           ]),
         ]),
     },
